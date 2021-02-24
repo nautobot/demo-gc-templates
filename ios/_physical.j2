@@ -17,9 +17,10 @@ interface {{ interface["name"] }}
 {% endif %}
 {% endif %}
 {% if interface["enabled"] == false %}
- no shutdown
+ shutdown
 {% endif %}
  negotiation auto
  no mop enabled
  no mop sysid
+!
 
