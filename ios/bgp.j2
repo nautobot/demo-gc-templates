@@ -1,0 +1,12 @@
+router bgp {{ devices[0]['config_context']["bgp"]["asn"] }}
+ bgp router-id {{ devices[0]['config_context']["bgp"]["rid"] }}
+{% if devices[0]['config_context']["bgp"]["log-neighbor-changes"] == true %}
+ bgp log-neighbor-changes
+{% endif %}
+{% if devices[0]['config_context']["bgp"]["redistribute"]|length > 0 %}
+ redistribute {{ devices[0]['config_context']["bgp"]["redistribute"]|join(' ') }}
+{% endif %}
+{% for neighbor in devices[0]['config_context']["bgp"]["neighbors"] %}
+ neighbor {{ neighbor["ip"] }} remote-as {{ neighbor["remote-asn"] }}
+{% endfor %}
+

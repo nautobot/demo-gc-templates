@@ -1,0 +1,5 @@
+{% for vlan in devices[0]["site"]["vlans"] %}
+vlan {{ vlan["id"] }}
+  vlan name {{ vlan["name"] }}
+{% endfor %}
+

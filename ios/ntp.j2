@@ -1,0 +1,8 @@
+{% for server in devices[0]['config_context']['ntp'] %}
+{% if server['prefer'] %}
+ntp server {{ server['ip'] }} prefer
+{% else %}
+ntp server {{ server['ip'] }}
+{% endif %}
+{% endfor %}
+

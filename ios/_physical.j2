@@ -1,0 +1,25 @@
+interface {{ interface["name"] }}
+{% if interface["description"] | length > 1 %}
+ description {{ interface["description"] }}
+{% endif %}
+{% if interface["ip_addresses"] | length > 0 %}
+{% for addr in interface["ip_addresses"] %}
+{% if addr["address"] is defined %}
+ ip address {{ addr["address"] }}
+{% endif %}
+{% endfor %}
+{% else %}
+ no ip address
+{% endif %}
+{% if devices[0]["config_context"]["acl"] is defined %}
+{% if devices[0]["config_context"]["acl"]["interfaces"][interface["name"]] is defined %}
+ ip access-group {{ devices[0]["config_context"]["acl"]["interfaces"][interface["name"]]["acl"] }} {{ devices[0]["config_context"]["acl"]["interfaces"][interface["name"]]["direction"] }}
+{% endif %}
+{% endif %}
+{% if interface["enabled"] == false %}
+ no shutdown
+{% endif %}
+ negotiation auto
+ no mop enabled
+ no mop sysid
+

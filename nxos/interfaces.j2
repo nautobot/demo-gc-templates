@@ -1,0 +1,21 @@
+{% for interface in devices[0]["interfaces"] %}
+{% if 'lan' in interface["name"] %}
+{% include "./nxos/_svi.j2" %}
+{% endif %}
+{% endfor %}
+{% for interface in devices[0]["interfaces"] %}
+{% if 'thernet' in interface["name"] %}
+{% include "./nxos/_physical.j2" %}
+{% endif %}
+{% endfor %}
+{% for interface in devices[0]["interfaces"] %}
+{% if 'gmt' in interface["name"] %}
+{% include "./nxos/_mgmt.j2" %}
+{% endif %}
+{% endfor %}
+{% for interface in devices[0]["interfaces"] %}
+{% if 'loop' in interface["name"] %}
+{% include "./nxos/_loopback.j2" %}
+{% endif %}
+{% endfor %}
+

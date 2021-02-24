@@ -1,0 +1,9 @@
+{% for community in devices[0]["config_context"]["snmp"]["community"] %}
+snmp-server community {{ community["name"] }} {{ community["role"] }}
+{% endfor %}
+snmp-server location {{ devices[0]["config_context"]["snmp"]["location"] }}
+snmp-server contact {{ devices[0]["config_context"]["snmp"]["contact"] }}
+{% for host in devices[0]["config_context"]["snmp"]["host"] %}
+snmp-server host {{ host["ip"] }} version {{ host["version"] }} {{ host["community"] }}
+{% endfor %}
+

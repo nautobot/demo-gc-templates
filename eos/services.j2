@@ -1,0 +1,9 @@
+management api http-commands
+   protocol http
+   protocol unix-socket
+   no shutdown
+!
+management api gnmi
+   transport grpc default
+      port 830
+

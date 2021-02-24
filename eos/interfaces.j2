@@ -1,0 +1,21 @@
+{% for interface in devices[0]["interfaces"] %}
+{% if 'lan' in interface["name"] %}
+{% include "./eos/_svi.j2" %}
+{% endif %}
+{% endfor %}
+{% for interface in devices[0]["interfaces"] %}
+{% if 'thernet' in interface["name"] %}
+{% include "./eos/_physical.j2" %}
+{% endif %}
+{% endfor %}
+{% for interface in devices[0]["interfaces"] %}
+{% if 'Loop' in interface["name"] %}
+{% include "./eos/_loopback.j2" %}
+{% endif %}
+{% endfor %}
+{% for interface in devices[0]["interfaces"] %}
+{% if 'anagement' in interface["name"] %}
+{% include "./eos/_mgmt.j2" %}
+{% endif %}
+{% endfor %}
+

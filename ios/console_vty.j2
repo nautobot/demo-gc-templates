@@ -1,0 +1,13 @@
+line con 0
+ stopbits 1
+line vty 0 4
+ privilege level 15
+ login local
+ transport preferred ssh
+ transport input all
+line vty 5 15
+ privilege level 15
+ login local
+ transport preferred ssh
+ transport input all
+
