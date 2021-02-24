@@ -1,0 +1,6 @@
+set protocols bgp local-as {{ devices[0]['config_context']["bgp"]["asn"] }}
+set protocols bgp group p2p export send-direct
+{% for neighbor in devices[0]['config_context']["bgp"]["neighbors"] %}
+set protocols bgp group p2p neighbor {{ neighbor["ip"] }} peer-as {{ neighbor["remote-asn"] }}
+{% endfor %}
+

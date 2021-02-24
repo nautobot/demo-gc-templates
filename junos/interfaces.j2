@@ -1,0 +1,16 @@
+{% for interface in devices[0]["interfaces"] %}
+{% if 'ge-' in interface["name"] %}
+{% include "./junos/_physical.j2" %}
+{% endif %}
+{% endfor %}
+{% for interface in devices[0]["interfaces"] %}
+{% if 'fxp' in interface["name"] %}
+{% include "./junos/_mgmt.j2" %}
+{% endif %}
+{% endfor %}
+{% for interface in devices[0]["interfaces"] %}
+{% if 'lo' in interface["name"] %}
+{% include "./junos/_loopback.j2" %}
+{% endif %}
+{% endfor %}
+

@@ -1,1 +1,23 @@
-hostname {{ host.name }}
+set version 18.2R1.9
+{% include './junos/local_user.j2' %}
+set system root-authentication encrypted-password "$6$Z5pgyCKJ$XFMRbBTMD.RjKlOtzCyUjcumTSnXDv6iX2HvhYr9dF3fJXsJeTP5Vms0lN7BzaQHyh8.nwUmsF.OBgBm/G.Dz1"
+{% include './junos/hostname.j2' %}
+{% include './junos/dns.j2' %}
+{% include './junos/services.j2' %}
+{% include './junos/syslog.j2' %}
+set chassis fpc 0 pic 0 number-of-ports 20
+set chassis fpc 0 lite-mode
+{% include './junos/interfaces.j2' %}
+{% if devices[0]["snmp"] is defined %}
+{% include './junos/snmp.j2' %}
+{% endif %}
+{% include './junos/bgp.j2' %}
+{% if devices[0]["config_context"]["lldp"] == true %}
+set protocols lldp transmit-delay 5
+set protocols lldp port-id-subtype interface-name
+set protocols lldp interface all
+set protocols lldp interface fxp0
+{% endif %}
+set policy-options policy-statement send-direct term 1 from protocol direct
+set policy-options policy-statement send-direct term 1 then accept
+set routing-instances mgmt_junos description "Management VRF"

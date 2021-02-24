@@ -1,0 +1,16 @@
+{% if interface["description"] | length > 1 %}
+set interfaces {{ interface["name"] }} description {{ interface["description"] }}
+{% endif %}
+{% if interface["ip_addresses"] | length > 0 %}
+{% for addr in interface["ip_addresses"] %}
+{% if addr["address"] is defined %}
+set interfaces {{ interface["name"] }} unit 0 family inet address {{ addr["address"] }}
+{% endif %}
+{% endfor %}
+{% else %}
+set interfaces {{ interface["name"] }} unit 0 family inet
+{% endif %}
+{% if interface["enabled"] == false %}
+set interfaces {{ interface["name"] }} enabled
+{% endif %}
+
