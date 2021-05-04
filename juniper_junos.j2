@@ -8,11 +8,11 @@ set system root-authentication encrypted-password "$6$Z5pgyCKJ$XFMRbBTMD.RjKlOtz
 set chassis fpc 0 pic 0 number-of-ports 20
 set chassis fpc 0 lite-mode
 {% include './junos/interfaces.j2' %}
-{% if devices[0]["snmp"] is defined %}
+{% if snmp is defined %}
 {% include './junos/snmp.j2' %}
 {% endif %}
 {% include './junos/bgp.j2' %}
-{% if devices[0]["config_context"]["lldp"] == true %}
+{% if config_context["lldp"] == true %}
 set protocols lldp transmit-delay 5
 set protocols lldp port-id-subtype interface-name
 set protocols lldp interface all

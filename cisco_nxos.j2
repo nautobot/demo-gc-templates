@@ -83,26 +83,26 @@ logging level lldp 4
 
 {% include "./nxos/local_user.j2" %}
 {% include "./nxos/dns.j2" %}
-{% if devices[0]["config_context"]["acl"]["definitions"]["named"]|length > 0 %}
+{% if config_context["acl"]["definitions"]["named"]|length > 0 %}
 {% include "./nxos/acl.j2" %}
 {% endif %}
-copp profile {{ devices[0]["config_context"]["copp-profile"] }}
+copp profile {{ config_context["copp-profile"] }}
 {% include './nxos/snmp.j2' %}
 {% include './nxos/ntp.j2' %}
 
-{% if devices[0]["config_context"]["routes"] is defined %}
-{% if devices[0]["config_context"]["routes"]["static"] is defined %}
-{% for static in devices[0]["config_context"]["routes"]["static"] %}
+{% if config_context["routes"] is defined %}
+{% if config_context["routes"]["static"] is defined %}
+{% for static in config_context["routes"]["static"] %}
 {{ static }}
 {% endfor %}
 {% endif %}
 {% endif %}
-{% if devices[0]["vlans_merged_list"] is defined %}
-vlan {{ devices[0]["vlans_merged_list"] }}
+{% if vlans_merged_list is defined %}
+vlan {{ vlans_merged_list }}
 {% endif %}
 {% include './nxos/vlans.j2' %}
-{% if devices[0]["config_context"]["route-maps"] is defined %}
-{% for name, details in devices[0]["config_context"]["route-maps"].items() %}
+{% if config_context["route-maps"] is defined %}
+{% for name, details in config_context["route-maps"].items() %}
 route-map {{ name }} {{ details["type"] }} {{ details["seq"] }}
 {% for entry in details["statements"] %}
   {{ entry }}
@@ -118,7 +118,7 @@ nxapi ssl protocols TLSv1
 
 {% include "./nxos/interfaces.j2" %}
 {% include "./nxos/console_vty.j2" %}
-{% if devices[0]["config_context"]["bgp"] is defined %}
+{% if config_context["bgp"] is defined %}
 {% include './nxos/bgp.j2' %}
 {% endif %}
 

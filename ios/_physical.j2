@@ -11,9 +11,9 @@ interface {{ interface["name"] }}
 {% else %}
  no ip address
 {% endif %}
-{% if devices[0]["config_context"]["acl"] is defined %}
-{% if devices[0]["config_context"]["acl"]["interfaces"][interface["name"]] is defined %}
- ip access-group {{ devices[0]["config_context"]["acl"]["interfaces"][interface["name"]]["acl"] }} {{ devices[0]["config_context"]["acl"]["interfaces"][interface["name"]]["direction"] }}
+{% if config_context["acl"] is defined %}
+{% if config_context["acl"]["interfaces"][interface["name"]] is defined %}
+ ip access-group {{ config_context["acl"]["interfaces"][interface["name"]]["acl"] }} {{ config_context["acl"]["interfaces"][interface["name"]]["direction"] }}
 {% endif %}
 {% endif %}
 {% if interface["enabled"] == false %}

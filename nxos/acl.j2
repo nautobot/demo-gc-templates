@@ -1,4 +1,4 @@
-{% for name, definition in devices[0]["config_context"]["acl"]["definitions"]["named"].items() %}
+{% for name, definition in config_context["acl"]["definitions"]["named"].items() %}
 ip access-list {{ name }}
 {% for entry in definition %}
   {{ entry }}

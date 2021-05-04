@@ -119,9 +119,9 @@ spanning-tree mode mstp
 !
 {% include './eos/interfaces.j2' %}
 !
-{% if devices[0]["config_context"]["routes"] is defined %}
-{% if devices[0]["config_context"]["routes"]["static"] is defined %}
-{% for static in devices[0]["config_context"]["routes"]["static"] %}
+{% if config_context["routes"] is defined %}
+{% if config_context["routes"]["static"] is defined %}
+{% for static in config_context["routes"]["static"] %}
 {{ static }}
 {% endfor %}
 {% endif %}
@@ -129,7 +129,7 @@ spanning-tree mode mstp
 !
 ip routing
 !
-{% if devices[0]["config_context"]["bgp"] is defined %}
+{% if config_context["bgp"] is defined %}
 {% include './eos/bgp.j2' %}
 {% endif %}
 !
