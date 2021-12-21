@@ -7,12 +7,10 @@ interface {{ interface["name"] }}
 {% endif %}
 {% if 'lan' in interface["name"] %}
 {% include "./eos/_svi.j2" %}
-{% endif %}
 {% elif 'thernet' in interface["name"] %}
 {% include "./eos/_physical.j2" %}
 {% elif 'Loop' in interface["name"] %}
 {% include "./eos/_loopback.j2" %}
-{% endif %}
 {% elif 'anagement' in interface["name"] %}
 {% include "./eos/_mgmt.j2" %}
 {% endif %}
