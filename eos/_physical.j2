@@ -1,7 +1,3 @@
-interface {{ interface["name"] }}
-{% if interface["description"] | length > 1 %}
-   description {{ interface["description"] }}
-{% endif %}
 {% if config_context["acl"] is defined %}
 {% if config_context["acl"]["interfaces"] is defined %}
 {% if config_context["acl"]["interfaces"][interface["name"]] is defined %}
