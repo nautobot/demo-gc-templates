@@ -1,20 +1,17 @@
 {% for interface in interfaces %}
+interface {{ interface["name"] }}
+{% if interface["cpf_ntc_description"] is defined and interface["cpf_ntc_description"] != "" %}
+   description {{ interface["cpf_ntc_description"] }}
+{% elif interface["description"] | length > 1 %}
+   description {{ interface["description"] }}
+{% endif %}
 {% if 'lan' in interface["name"] %}
 {% include "./eos/_svi.j2" %}
-{% endif %}
-{% endfor %}
-{% for interface in interfaces %}
-{% if 'thernet' in interface["name"] %}
+{% elif 'thernet' in interface["name"] %}
 {% include "./eos/_physical.j2" %}
-{% endif %}
-{% endfor %}
-{% for interface in interfaces %}
-{% if 'Loop' in interface["name"] %}
+{% elif 'Loop' in interface["name"] %}
 {% include "./eos/_loopback.j2" %}
-{% endif %}
-{% endfor %}
-{% for interface in interfaces %}
-{% if 'anagement' in interface["name"] %}
+{% elif 'anagement' in interface["name"] %}
 {% include "./eos/_mgmt.j2" %}
 {% endif %}
 {% endfor %}

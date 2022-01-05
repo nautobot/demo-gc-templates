@@ -53,6 +53,7 @@ query ($device: String!) {
       mac_address
       enabled
       name
+      cpf_ntc_description
       ip_addresses {
         address
         tags {
