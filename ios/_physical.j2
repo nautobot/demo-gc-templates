@@ -12,8 +12,10 @@ interface {{ interface["name"] }}
  no ip address
 {% endif %}
 {% if config_context["acl"] is defined %}
+{% if config_context["acl"]["interfaces"] is defined %}
 {% if config_context["acl"]["interfaces"][interface["name"]] is defined %}
  ip access-group {{ config_context["acl"]["interfaces"][interface["name"]]["acl"] }} {{ config_context["acl"]["interfaces"][interface["name"]]["direction"] }}
+{% endif %}
 {% endif %}
 {% endif %}
 {% if interface["enabled"] == false %}
