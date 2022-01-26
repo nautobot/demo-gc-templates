@@ -1,5 +1,5 @@
 {% for vlan in site["vlans"] %}
-vlan {{ vlan["id"] }}
-  vlan name {{ vlan["name"] }}
+vlan {{ vlan["vid"] }}
+  name {{ vlan["name"] }}
 {% endfor %}
 
