@@ -12,6 +12,6 @@ interface {{ interface["name"] }}
  no ip address
 {% endif %}
 {% if interface["enabled"] == false %}
- no shutdown
+ shutdown
 {% endif %}
 
