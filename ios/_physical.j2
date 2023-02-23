@@ -24,9 +24,5 @@ interface {{ interface["name"] }}
  negotiation auto
  no mop enabled
  no mop sysid
- no ip proxy-arp
-{% if interface["mtu"] is defined %}
-  mtu {{ interface["mtu"] }}
-{% endif %}
 !
 
