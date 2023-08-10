@@ -36,9 +36,8 @@ query ($device: String!) {
       }
       napalm_driver
     }
-    site {
+    location {
       name
-      slug
       vlans {
         id
         name
