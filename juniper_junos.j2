@@ -11,7 +11,9 @@ set chassis fpc 0 lite-mode
 {% if snmp is defined %}
 {% include './junos/snmp.j2' %}
 {% endif %}
+{% if config_context.get("bgp") %}
 {% include './junos/bgp.j2' %}
+{% endif %}
 {% if config_context["lldp"] == true %}
 set protocols lldp transmit-delay 5
 set protocols lldp port-id-subtype interface-name
