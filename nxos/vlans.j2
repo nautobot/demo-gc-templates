@@ -1,5 +1,4 @@
-{% for vlan in site["vlans"] %}
+{% for vlan in location["vlans"] %}
 vlan {{ vlan["vid"] }}
   name {{ vlan["name"] }}
 {% endfor %}
-
