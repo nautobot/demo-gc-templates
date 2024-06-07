@@ -5,10 +5,10 @@ This is demo repo to hold backup configurations for the purpose nautobot golden 
 The templates provided here are leveraging the the following GraphQL Query and transposer with `Shorten the SoT data returned` turned on.
 
 ```
-query ($device: String!) {
-  devices(name: $device) {
+query ($device_id: ID!) {
+  device(id: $device_id) {
     config_context
-    name
+    hostname: name
     position
     serial
     primary_ip4 {
@@ -23,14 +23,12 @@ query ($device: String!) {
     }
     tags {
       name
-      slug
     }
-    device_role {
+    role {
       name
     }
     platform {
       name
-      slug
       manufacturer {
         name
       }
@@ -52,7 +50,6 @@ query ($device: String!) {
       mac_address
       enabled
       name
-      cpf_ntc_description
       ip_addresses {
         address
         tags {
@@ -82,7 +79,7 @@ query ($device: String!) {
         color
       }
       tagged_vlans {
-        site {
+        location {
           name
         }
         id
@@ -102,13 +99,13 @@ import ipaddress
 # Can take the returned data from the graphql query and can modify the data before sending to the jinja2 template.
 def transposer(data):
     """Some."""
-    if len(data["site"]["vlans"]) > 0:
+    if len(data["location"]["vlans"]) > 0:
         data["vlans_merged_list"] = vlan_parser(
-            [vlan["vid"] for vlan in data["site"]["vlans"]]
+            [vlan["vid"] for vlan in data["location"]["vlans"]]
         )
-    if data["platform"]["slug"] == "cisco_ios":
+    if data["platform"]["name"] == "Cisco IOS":
         expand_prefix(data["interfaces"])
-    if data["platform"]["slug"] == "cisco_nxos":
+    if data["platform"]["name"] == "Cisco NX-OS":
         format_mac_to_nxos(data["interfaces"])
     return data
     # return data["interfaces"]
