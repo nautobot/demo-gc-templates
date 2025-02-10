@@ -4,7 +4,7 @@ version 17.1
 service timestamps debug datetime msec
 service timestamps log datetime msec
 ! Call-home is enabled by Smart-Licensing.
-service call-home
+no service call-home
 platform qfp utilization monitor load 80
 platform punt-keepalive disable-kernel-core
 platform console serial
