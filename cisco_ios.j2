@@ -208,7 +208,9 @@ cdp run
 virtual-service csr_mgmt
 !
 ip forward-protocol nd
+no ip http server
 ip http authentication local
+no ip http secure-server
 !
 {% if config_context["routes"] is defined %}
 {% if config_context["routes"]["static"] is defined %}
