@@ -1,10 +1,8 @@
-{% if config_context["acl"]["definitions"] is defined %}
-{% if config_context["acl"]["definitions"]["named"] is defined %}
+{% if config_context["acl"]["definitions"] is defined and config_context["acl"]["definitions"]["named"] is defined %}
 {% for name, definition in config_context["acl"]["definitions"]["named"].items() %}
 ip access-list {{ name }}
 {% for entry in definition %}
   {{ entry }}
 {% endfor %}
 {% endfor %}
-{% endif %}
 {% endif %}
