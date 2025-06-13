@@ -83,7 +83,7 @@ logging level lldp 4
 
 {% include "./nxos/local_user.j2" %}
 {% include "./nxos/dns.j2" %}
-{% if config_context["acl"] is defined %}
+{% if config_context.get("acl") %}
 {% include "./nxos/acl.j2" %}
 {% endif %}
 copp profile {{ config_context["copp-profile"] }}
