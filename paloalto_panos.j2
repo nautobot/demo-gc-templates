@@ -1,27 +1,22 @@
-<response status="success">
-  <result>
-    <config ptpl="AMER-Regional-Template">
-      <devices ptpl="AMER-Regional-Template">
-        <entry name="localhost.localdomain" ptpl="AMER-Regional-Template">
-          <vsys ptpl="AMER-Regional-Template">
-            <entry name="vsys1" ptpl="AMER-Regional-Template">
-              <user-id-collector ptpl="AMER-Regional-Template">
-                <server-monitor ptpl="AMER-Regional-Template">
-                  <entry name="UserID-Monitored-Server-1.2.3.4" ptpl="Global-Template">
-                    <syslog ptpl="Global-Template">
-                      <syslog-parse-profile ptpl="Global-Template">
-                        <entry name="UserID-Syslog-Profile" ptpl="Global-Template">
-                          <event-type ptpl="Global-Template">login</event-type>
-                        </entry>
-                      </syslog-parse-profile>
-                    </syslog>
-                  </entry>
-                </server-monitor>
-              </user-id-collector>
-            </entry>
-          </vsys>
-        </entry>
-      </devices>
-    </config>
-  </result>
-</response>
+<rpc-reply>
+    <interface-information>
+        <physical-interface>
+            <name>ge-0/0/0</name>
+            <admin-status>up</admin-status>
+            <oper-status>up</oper-status>
+            <logical-interface>
+                <name>ge-0/0/0.0</name>
+                <admin-status>up</admin-status>
+                <oper-status>up</oper-status>
+                <filter-information>
+                </filter-information>
+                <address-family>
+                    <address-family-name>inet</address-family-name>
+                    <interface-address>
+                        <ifa-local>172.16.0.151/24</ifa-local>
+                    </interface-address>
+                </address-family>
+            </logical-interface>
+        </physical-interface>
+    </interface-information>
+</rpc-reply>
