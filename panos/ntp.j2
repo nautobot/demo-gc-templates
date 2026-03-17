@@ -1,0 +1,10 @@
+<ntp-servers ptpl="{{ config_context['ntp']['template_name'] }}">
+{% for server in config_context['ntp']['servers'] %}
+                <{{ server['role'] }}-ntp-server ptpl="{{ config_context['ntp']['template_name'] }}">
+                  <ntp-server-address ptpl="{{ config_context['ntp']['template_name'] }}">{{ server['address'] }}</ntp-server-address>
+                  <authentication-type>
+                    <{{ server['auth_type'] }}/>
+                  </authentication-type>
+                </{{ server['role'] }}-ntp-server>
+{% endfor %}
+              </ntp-servers>
