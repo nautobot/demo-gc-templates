@@ -1282,12 +1282,23 @@
 							</panorama>
 							<server-verification>no</server-verification>
 							<ntp-servers>
+							  {% for server in config_context['ntp'] %}
+								{% if server.get('prefer') or config_context['ntp'] |length == 1 %}
 								<primary-ntp-server>
-									<ntp-server-address>time.google.com</ntp-server-address>
+									<ntp-server-address>{{ server['ip'] }}</ntp-server-address>
 									<authentication-type>
 										<none/>
 									</authentication-type>
 								</primary-ntp-server>
+								{% else %}
+								<secondary-ntp-server>
+									<ntp-server-address>{{ server[['ip'] }}</ntp-server-address>
+									<authentication-type>
+										<none/>
+									</authentication-type>
+								</secondary-ntp-server>
+								{% endif %}
+								{% endfor %}
 							</ntp-servers>
 							<login-banner>Banner</login-banner>
 							<snmp-setting>
