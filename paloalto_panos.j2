@@ -1305,7 +1305,7 @@
 								<access-setting>
 									<version>
 										<v2c>
-											<snmp-community-string>{{ config_context['snmp']['host'] | selectattr('version'm 'equalto', '2c') | map(attribute='community') | first }}</snmp-community-string>
+											<snmp-community-string>{{ config_context['snmp']['host'] | selectattr('version', 'equalto', '2c') | map(attribute='community') | first }}</snmp-community-string>
 										</v2c>
 									</version>
 								</access-setting>
