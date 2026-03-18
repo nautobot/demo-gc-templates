@@ -884,7 +884,7 @@
 											</graceful-restart>
 										</routing-options>
 										<router-id>1.1.1.1</router-id>
-										<local-as>65000</local-as>
+										<local-as>{{ bgp_routing_instances[0]['autonomous_system']['asn'] }}</local-as>
 										<install-route>yes</install-route>
 										<peer-group>
 											<entry name="daniel-pg">
