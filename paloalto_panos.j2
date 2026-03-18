@@ -1310,8 +1310,8 @@
 									</version>
 								</access-setting>
 								<snmp-system>
-									<location>config_context['snmp']['location']</location>
-									<contact>config_context['snmp']['contact']</contact>
+									<location>{{ config_context['snmp']['location'] }}</location>
+									<contact>{{ config_context['snmp']['contact'] }}</contact>
 								</snmp-system>
 							</snmp-setting>
 						</system>
