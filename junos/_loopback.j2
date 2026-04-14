@@ -1,5 +1,5 @@
 {% if interface["description"] | length > 1 %}
-set interfaces {{ interface["name"] }} description {{ interface["description"] }}
+set interfaces {{ interface["name"] }} description "{{ interface["description"] }}"
 {% endif %}
 {% if interface["ip_addresses"] | length > 0 %}
 {% for addr in interface["ip_addresses"] %}
