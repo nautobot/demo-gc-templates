@@ -1,0 +1,10 @@
+{% for server in config_context["ntp"] %}
+{% if server.get("prefer") %}
+set system ntp server {{ server["ip"] }} prefer
+{% endif %}
+{% if mgmt_state.vrf %}
+set system ntp server {{ server["ip"] }} routing-instance {{ mgmt_state.vrf }}
+{% elif not server.get("prefer") %}
+set system ntp server {{ server["ip"] }}
+{% endif %}
+{% endfor %}

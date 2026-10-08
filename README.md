@@ -1,6 +1,6 @@
 # nautobot-gc-templates
 
-This is demo repo to hold backup configurations for the purpose nautobot golden config plugin.
+This is a demo repo that holds the Jinja2 templates Nautobot Golden Config renders into intended configurations.
 
 The templates provided here are leveraging the the following GraphQL Query and transposer with `Shorten the SoT data returned` turned on.
 
@@ -49,9 +49,13 @@ query ($device_id: ID!) {
       description
       mac_address
       enabled
+      mgmt_only
       name
       ip_addresses {
         address
+        role {
+          name
+        }
         tags {
           id
         }
@@ -86,6 +90,7 @@ query ($device_id: ID!) {
       }
       tags {
         id
+        name
       }
     }
   }
@@ -185,3 +190,45 @@ def vlan_parser(vlan_list, first_line_len=48, other_line_len=44):  # pylint: dis
         result.remove("")
     return result
 ```
+
+The templates require `interfaces.mgmt_only` and `interfaces.tags.name`. If the query stored in Golden Config is missing any of them, rendering fails with an `UndefinedError` (Golden Config renders with `StrictUndefined`) instead of producing a config without management or OSPF handling.
+
+## Interfaces the templates skip
+
+`common/config_interfaces.j2` builds the list of interfaces the `interfaces.j2` templates loop over. It leaves out:
+
+- Interfaces with `mgmt_only` set. Their real configuration (environment-specific addresses, DHCP, management VRFs) is not modelled in Nautobot, so rendering them would cut the device off its management network.
+- `Loopback99`, the containerlab management loopback.
+
+## Primary and secondary addresses
+
+On EOS, IOS and NX-OS, an interface's first address is rendered as primary and the rest get `secondary`, in the order the Device Info query returns them.
+
+## Management interface for services
+
+`common/mgmt_state.j2` finds the device's management interface (the first `mgmt_only` interface). When there is one, syslog, SNMP, NTP and DNS are sourced from it, in the platform's management VRF:
+
+| Platform | VRF | Rendered |
+|---|---|---|
+| EOS | default | `logging source-interface`, `snmp-server local-interface`, `ntp local-interface`, `ip domain lookup source-interface` |
+| IOS | default | `logging source-interface`, `snmp-server trap-source`, `ntp source` |
+| NX-OS | `management` | `use-vrf management` on syslog, SNMP, NTP and name servers, plus `logging source-interface`, `snmp-server source-interface traps`, `ntp source-interface` |
+| Junos | `mgmt_junos` | `routing-instance mgmt_junos` on NTP servers and the trap group, plus `set snmp interface`. Syslog hosts and name servers get no `routing-instance`. Requires `set system management-instance` on the device |
+
+Devices without a `mgmt_only` interface render none of these lines.
+
+## Optional config context keys
+
+Every key is optional. When a key is missing, the templates render the same lines they rendered before the key existed.
+
+| Key | Shape | Renders |
+|---|---|---|
+| `dns` | `{domain: str, name_servers: [str]}` | Domain name and name servers on all platforms. |
+| `syslog` | `{servers: [{ip: str, port: int}], port: int, level: str}` | Syslog hosts on all platforms. A server's `port` overrides the shared `port`. NX-OS turns `level` into its severity number. |
+| `ospf` | `{process_id: int, area: str, reference_bandwidth: int}` | OSPF on every interface tagged `ospf`. `process_id` defaults to `1`, `area` to `0.0.0.0`. `reference_bandwidth` is in Mbps. |
+
+### OSPF
+
+- An interface runs OSPF only when it carries the `ospf` tag, has an address, and is one the templates configure (not `mgmt_only`, not `Loopback99`). Physical interfaces use the point-to-point network type, and loopbacks are passive.
+- The router-id is the address of the tagged `Loopback0` (`loopback0` on NX-OS, `lo0` on Junos).
+- A device without any tagged interface renders no OSPF configuration (including NX-OS `feature ospf`), even when `ospf` is defined.

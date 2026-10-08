@@ -1,4 +1,9 @@
-version 9.3(3) Bios:version
+{% set config_interfaces = namespace(items=[]) %}
+{% include './common/config_interfaces.j2' %}
+{% set ospf_state = namespace(enabled=false, router_id=none, process_id=none, area=none, interfaces=[]) %}
+{% include './common/ospf_state.j2' %}
+{% set mgmt_state = namespace(interface=none, vrf="management") %}
+{% include './common/mgmt_state.j2' %}
 {% include './nxos/hostname.j2' %}
 
 {% include './nxos/services.j2' %}
@@ -121,6 +126,9 @@ nxapi ssl protocols TLSv1
 {% if config_context["bgp"] is defined %}
 {% include './nxos/bgp.j2' %}
 {% endif %}
+{% if ospf_state.enabled %}
+{% include './nxos/ospf.j2' %}
+{% endif %}
 
 {% include "./nxos/syslog.j2" %}
 logging level kernel 4
@@ -144,5 +152,4 @@ logging level local5 4
 logging level local6 4
 logging level local7 4
 logging origin-id hostname
-boot nxos bootflash:/nxos.9.3.3.bin sup-1
 

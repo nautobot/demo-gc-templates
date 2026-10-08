@@ -1,3 +1,12 @@
 logging origin-id hostname
+{% if mgmt_state.interface %}
+logging source-interface {{ mgmt_state.interface }}
+{% endif %}
+{% if config_context["syslog"] is defined %}
+{% for server in config_context["syslog"]["servers"] %}
+{% set port = server.get("port", config_context["syslog"].get("port")) %}
+logging host {{ server["ip"] }}{{ (" transport udp port " ~ port) if port else "" }}
+{% endfor %}
+{% else %}
 logging host 10.1.1.1 transport udp port 7004
-
+{% endif %}

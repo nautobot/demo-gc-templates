@@ -3,6 +3,9 @@ snmp-server community {{ community["name"] }} {{ community["role"] }}
 {% endfor %}
 snmp-server location {{ config_context["snmp"]["location"] }}
 snmp-server contact {{ config_context["snmp"]["contact"] }}
+{% if mgmt_state.interface %}
+snmp-server trap-source {{ mgmt_state.interface }}
+{% endif %}
 {% for host in config_context["snmp"]["host"] %}
 snmp-server host {{ host["ip"] }} version {{ host["version"] }} {{ host["community"] }} 
 {% endfor %}

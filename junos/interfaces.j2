@@ -1,16 +1,6 @@
-{% for interface in interfaces %}
-{% if 'ge-' in interface["name"] %}
+{% for interface in config_interfaces.items if 'ge-' in interface["name"] %}
 {% include "./junos/_physical.j2" %}
-{% endif %}
 {% endfor %}
-{% for interface in interfaces %}
-{% if 'fxp' in interface["name"] %}
-{% include "./junos/_mgmt.j2" %}
-{% endif %}
-{% endfor %}
-{% for interface in interfaces %}
-{% if 'lo' in interface["name"] %}
+{% for interface in config_interfaces.items if 'lo' in interface["name"] %}
 {% include "./junos/_loopback.j2" %}
-{% endif %}
 {% endfor %}
-

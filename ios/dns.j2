@@ -1,3 +1,8 @@
+{% set dns = config_context.get("dns", {}) %}
+{% if not dns.get("name_servers") %}
 no ip domain lookup
-ip domain name ntc.com
-
+{% endif %}
+ip domain name {{ dns.get("domain", "ntc.com") }}
+{% if dns.get("name_servers") %}
+ip name-server {{ dns["name_servers"] | join(" ") }}
+{% endif %}

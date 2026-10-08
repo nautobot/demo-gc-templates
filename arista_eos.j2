@@ -1,11 +1,19 @@
+{% set config_interfaces = namespace(items=[]) %}
+{% include './common/config_interfaces.j2' %}
+{% set ospf_state = namespace(enabled=false, router_id=none, process_id=none, area=none, interfaces=[]) %}
+{% include './common/ospf_state.j2' %}
+{% set mgmt_state = namespace(interface=none, vrf=none) %}
+{% include './common/mgmt_state.j2' %}
 !
 !
 transceiver qsfp default-mode 4x10G
 !
-logging host 10.125.1.171 7002
+{% include './eos/syslog.j2' %}
 logging format hostname fqdn
 logging facility local6
-logging source-interface Management1
+{% if mgmt_state.interface %}
+logging source-interface {{ mgmt_state.interface }}
+{% endif %}
 !
 logging level AAA informational
 logging level ACCOUNTING informational
@@ -131,6 +139,10 @@ ip routing
 !
 {% if config_context["bgp"] is defined %}
 {% include './eos/bgp.j2' %}
+{% endif %}
+!
+{% if ospf_state.enabled %}
+{% include './eos/ospf.j2' %}
 {% endif %}
 !
 {% include './eos/services.j2' %}

@@ -1,0 +1,8 @@
+{# Fills the caller's `mgmt_state` namespace with the device's management interface: the first
+   interface Nautobot marks mgmt_only. The caller sets `vrf` to the VRF the management interface
+   lives in, or none when it is in the default routing table. #}
+{% for interface in interfaces if interface["mgmt_only"] %}
+{% if loop.first %}
+{% set mgmt_state.interface = interface["name"] %}
+{% endif %}
+{% endfor %}

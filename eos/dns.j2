@@ -1,2 +1,8 @@
-ip domain-name infra.ntc.com
-
+{% set dns = config_context.get("dns", {}) %}
+dns domain {{ dns.get("domain", "infra.ntc.com") }}
+{% if mgmt_state.interface %}
+ip domain lookup source-interface {{ mgmt_state.interface }}
+{% endif %}
+{% for name_server in dns.get("name_servers", []) %}
+ip name-server vrf default {{ name_server }}
+{% endfor %}

@@ -11,6 +11,6 @@ set interfaces {{ interface["name"] }} unit 0 family inet address {{ addr["addre
 set interfaces {{ interface["name"] }} unit 0 family inet
 {% endif %}
 {% if interface["enabled"] == false %}
-set interfaces {{ interface["name"] }} enabled
+set interfaces {{ interface["name"] }} disable
 {% endif %}
 

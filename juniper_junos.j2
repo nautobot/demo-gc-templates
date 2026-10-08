@@ -1,18 +1,30 @@
+{% set config_interfaces = namespace(items=[]) %}
+{% include './common/config_interfaces.j2' %}
+{% set ospf_state = namespace(enabled=false, router_id=none, process_id=none, area=none, interfaces=[]) %}
+{% include './common/ospf_state.j2' %}
+{% set mgmt_state = namespace(interface=none, vrf="mgmt_junos") %}
+{% include './common/mgmt_state.j2' %}
 set version 18.2R1.9
 {% include './junos/local_user.j2' %}
 set system root-authentication encrypted-password "$6$Z5pgyCKJ$XFMRbBTMD.RjKlOtzCyUjcumTSnXDv6iX2HvhYr9dF3fJXsJeTP5Vms0lN7BzaQHyh8.nwUmsF.OBgBm/G.Dz1"
 {% include './junos/hostname.j2' %}
 {% include './junos/dns.j2' %}
+{% if config_context["ntp"] is defined %}
+{% include './junos/ntp.j2' %}
+{% endif %}
 {% include './junos/services.j2' %}
 {% include './junos/syslog.j2' %}
 set chassis fpc 0 pic 0 number-of-ports 20
 set chassis fpc 0 lite-mode
 {% include './junos/interfaces.j2' %}
-{% if snmp is defined %}
+{% if config_context["snmp"] is defined %}
 {% include './junos/snmp.j2' %}
 {% endif %}
 {% if config_context.get("bgp") %}
 {% include './junos/bgp.j2' %}
+{% endif %}
+{% if ospf_state.enabled %}
+{% include './junos/ospf.j2' %}
 {% endif %}
 {% if config_context["lldp"] == true %}
 set protocols lldp transmit-delay 5

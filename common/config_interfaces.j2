@@ -1,0 +1,5 @@
+{# Fills the caller's `config_interfaces` namespace with the interfaces the templates configure.
+   Management-only ports and the containerlab Loopback99 are left as the device has them. #}
+{% for interface in interfaces if not interface["mgmt_only"] and interface["name"] != "Loopback99" %}
+{% set config_interfaces.items = config_interfaces.items + [interface] %}
+{% endfor %}

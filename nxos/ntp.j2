@@ -1,8 +1,12 @@
+{% set ntp_vrf = mgmt_state.vrf if mgmt_state.interface else "default" %}
+{% if mgmt_state.interface %}
+ntp source-interface {{ mgmt_state.interface }}
+{% endif %}
 {% for server in config_context['ntp'] %}
 {% if server['prefer'] %}
-ntp server {{ server['ip'] }} prefer use-vrf default
+ntp server {{ server['ip'] }} prefer use-vrf {{ ntp_vrf }}
 {% else %}
-ntp server {{ server['ip'] }} use-vrf default
+ntp server {{ server['ip'] }} use-vrf {{ ntp_vrf }}
 {% endif %}
 {% endfor %}
 

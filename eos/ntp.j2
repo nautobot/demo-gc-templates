@@ -1,3 +1,6 @@
+{% if mgmt_state.interface %}
+ntp local-interface {{ mgmt_state.interface }}
+{% endif %}
 {% for server in config_context['ntp'] %}
 {% if server['prefer'] %}
 ntp server {{ server['ip'] }} prefer

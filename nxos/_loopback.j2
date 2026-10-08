@@ -1,17 +1,19 @@
-interface {{ interface["name"] }}
+interface {{ interface["name"] | lower }}
 {% if interface["description"] | length > 1 %}
   description {{ interface["description"] }}
 {% endif %}
 {% if interface["ip_addresses"] | length > 0 %}
 {% for addr in interface["ip_addresses"] %}
-{% if addr["address"] is defined %}
-  ip address {{ addr["address"] }}
-{% endif %}
+  ip address {{ addr["address"] }}{{ "" if loop.first else " secondary" }}
 {% endfor %}
 {% else %}
   no ip address
 {% endif %}
+{% if interface["name"] in ospf_state.interfaces %}
+  ip router ospf {{ ospf_state.process_id }} area {{ ospf_state.area }}
+  ip ospf passive-interface
+{% endif %}
 {% if interface["enabled"] == false %}
-  no shutdown
+  shutdown
 {% endif %}
 

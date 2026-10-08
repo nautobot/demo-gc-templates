@@ -1,0 +1,13 @@
+{% if ospf_state.router_id %}
+set routing-options router-id {{ ospf_state.router_id }}
+{% endif %}
+{% if config_context["ospf"].get("reference_bandwidth") %}
+set protocols ospf reference-bandwidth {{ config_context["ospf"]["reference_bandwidth"] }}m
+{% endif %}
+{% for name in ospf_state.interfaces %}
+{% if name.startswith("lo") %}
+set protocols ospf area {{ ospf_state.area }} interface {{ name }}.0 passive
+{% else %}
+set protocols ospf area {{ ospf_state.area }} interface {{ name }}.0 interface-type p2p
+{% endif %}
+{% endfor %}

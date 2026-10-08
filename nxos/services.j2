@@ -3,8 +3,10 @@ feature bash-shell
 feature scp-server
 cfs eth distribute
 feature bgp
+{% if ospf_state.enabled %}
+feature ospf
+{% endif %}
 feature interface-vlan
 feature hsrp
 feature vpc
 feature lldp
-

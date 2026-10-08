@@ -1,0 +1,15 @@
+{# Fills the caller's `ospf_state` namespace. Include it after common/config_interfaces.j2.
+   OSPF runs on the configured interfaces that are tagged "ospf" and have an address, so
+   management ports, Loopback99 and switchports never get OSPF commands. The router-id is
+   the first Loopback0/lo0 address. process_id and area default to 1 and 0. #}
+{% if config_context["ospf"] is defined %}
+{% set ospf_state.process_id = config_context["ospf"].get("process_id", 1) %}
+{% set ospf_state.area = config_context["ospf"].get("area", "0.0.0.0") %}
+{% for interface in config_interfaces.items if "ospf" in interface["tags"] | map(attribute="name") | list and interface["ip_addresses"] %}
+{% set ospf_state.interfaces = ospf_state.interfaces + [interface["name"]] %}
+{% if ospf_state.router_id is none and interface["name"] | lower in ["loopback0", "lo0"] %}
+{% set ospf_state.router_id = interface["ip_addresses"][0]["address"].split("/")[0] %}
+{% endif %}
+{% endfor %}
+{% set ospf_state.enabled = ospf_state.interfaces | length > 0 %}
+{% endif %}

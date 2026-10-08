@@ -1,6 +1,11 @@
+{% set config_interfaces = namespace(items=[]) %}
+{% include './common/config_interfaces.j2' %}
+{% set ospf_state = namespace(enabled=false, router_id=none, process_id=none, area=none, interfaces=[]) %}
+{% include './common/ospf_state.j2' %}
+{% set mgmt_state = namespace(interface=none, vrf=none) %}
+{% include './common/mgmt_state.j2' %}
 !
 !
-version 17.1
 service timestamps debug datetime msec
 service timestamps log datetime msec
 ! Call-home is enabled by Smart-Licensing.
@@ -200,6 +205,9 @@ cdp run
 !
 !
 {% include './ios/interfaces.j2' %}
+{% if ospf_state.enabled %}
+{% include './ios/ospf.j2' %}
+{% endif %}
 {% if config_context["bgp"] is defined %}
 {% include './ios/bgp.j2' %}
 {% endif %}

@@ -4,9 +4,7 @@ interface {{ interface["name"] }}
 {% endif %}
 {% if interface["ip_addresses"] | length > 0 %}
 {% for addr in interface["ip_addresses"] %}
-{% if addr["address"] is defined %}
- ip address {{ addr["address"] | ipaddress_interface("with_netmask") | replace('/', ' ') }}
-{% endif %}
+ ip address {{ addr["address"] | ipaddress_interface("with_netmask") | replace('/', ' ') }}{{ "" if loop.first else " secondary" }}
 {% endfor %}
 {% else %}
  no ip address
@@ -17,6 +15,10 @@ interface {{ interface["name"] }}
  ip access-group {{ config_context["acl"]["interfaces"][interface["name"]]["acl"] }} {{ config_context["acl"]["interfaces"][interface["name"]]["direction"] }}
 {% endif %}
 {% endif %}
+{% endif %}
+{% if interface["name"] in ospf_state.interfaces %}
+ ip ospf network point-to-point
+ ip ospf {{ ospf_state.process_id }} area {{ ospf_state.area }}
 {% endif %}
 {% if interface["enabled"] == false %}
  shutdown

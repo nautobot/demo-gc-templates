@@ -1,0 +1,8 @@
+{% if config_context["syslog"] is defined %}
+{% for server in config_context["syslog"]["servers"] %}
+{% set port = server.get("port", config_context["syslog"].get("port")) %}
+logging host {{ server["ip"] }}{{ (" " ~ port) if port else "" }}
+{% endfor %}
+{% else %}
+logging host 10.125.1.171 7002
+{% endif %}
