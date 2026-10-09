@@ -26,6 +26,8 @@ interface {{ interface["name"] }}
 {% endif %}
 {% if interface["enabled"] == false %}
   shutdown
+{% else %}
+  no shutdown
 {% endif %}
 
 
