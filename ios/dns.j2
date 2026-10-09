@@ -2,7 +2,7 @@
 {% if not dns.get("name_servers") %}
 no ip domain lookup
 {% endif %}
-ip domain name {{ dns.get("domain", "ntc.com") }}
 {% if dns.get("name_servers") %}
 ip name-server {{ dns["name_servers"] | join(" ") }}
 {% endif %}
+ip domain name {{ dns.get("domain", "ntc.com") }}
