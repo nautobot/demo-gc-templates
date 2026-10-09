@@ -229,6 +229,6 @@ Every key is optional. When a key is missing, the templates render the same line
 
 ### OSPF
 
-- An interface runs OSPF only when it carries the `ospf` tag, has an address, and is one the templates configure (not `mgmt_only`, not `Loopback99`). Physical interfaces use the point-to-point network type, and loopbacks are passive.
+- An interface runs OSPF only when it carries the `ospf` tag, has an address, and is one the templates configure (not `mgmt_only`, not `Loopback99`). Physical interfaces use the point-to-point network type. Loopbacks are passive on EOS, IOS and Junos; NX-OS has no passive option for loopbacks and does not send hellos from them.
 - The router-id is the address of the tagged `Loopback0` (`loopback0` on NX-OS, `lo0` on Junos).
 - A device without any tagged interface renders no OSPF configuration (including NX-OS `feature ospf`), even when `ospf` is defined.
