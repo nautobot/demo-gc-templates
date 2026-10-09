@@ -9,29 +9,8 @@ interface {{ interface["name"] }}
 {% endif %}
 {% endif %}
 {% endif %}
-{% if interface["tagged_vlans"] %}
-{% set vids = interface["tagged_vlans"] | map(attribute="vid") | unique | sort | list %}
-{% set vlan_ranges = namespace(items=[], start=vids[0], end=vids[0]) %}
-{% for vid in vids[1:] + [none] %}
-{% if vid is not none and vid == vlan_ranges.end + 1 %}
-{% set vlan_ranges.end = vid %}
-{% else %}
-{% set vlan_ranges.items = vlan_ranges.items + [vlan_ranges.start ~ ("-" ~ vlan_ranges.end if vlan_ranges.end != vlan_ranges.start else "")] %}
-{% set vlan_ranges.start = vid %}
-{% set vlan_ranges.end = vid %}
-{% endif %}
-{% endfor %}
+{% if interface["untagged_vlan"] or interface["tagged_vlans"] %}
   switchport
-  switchport mode trunk
-{% if interface["untagged_vlan"] and interface["untagged_vlan"]["vid"] != 1 %}
-  switchport trunk native vlan {{ interface["untagged_vlan"]["vid"] }}
-{% endif %}
-  switchport trunk allowed vlan {{ vlan_ranges.items | join(",") }}
-{% elif interface["untagged_vlan"] %}
-  switchport
-{% if interface["untagged_vlan"]["vid"] != 1 %}
-  switchport access vlan {{ interface["untagged_vlan"]["vid"] }}
-{% endif %}
 {% endif %}
 {% if interface["mac_address"] != none %}
   mac-address {{ interface["mac_address"] }}
