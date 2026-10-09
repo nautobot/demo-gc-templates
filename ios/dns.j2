@@ -6,3 +6,4 @@ no ip domain lookup
 ip name-server {{ dns["name_servers"] | join(" ") }}
 {% endif %}
 ip domain name {{ dns.get("domain", "ntc.com") }}
+
