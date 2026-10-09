@@ -71,9 +71,11 @@ query ($device_id: ID!) {
       }
       tagged_vlans {
         id
+        vid
       }
       untagged_vlan {
         id
+        vid
       }
       cable {
         termination_a_type
