@@ -1,9 +1,12 @@
-{% for interface in config_interfaces.items if 'lan' in interface["name"] %}
+{% for interface in interfaces if 'lan' in interface["name"] %}
 {% include "./nxos/_svi.j2" %}
 {% endfor %}
-{% for interface in config_interfaces.items if 'thernet' in interface["name"] %}
+{% for interface in interfaces if 'thernet' in interface["name"] %}
 {% include "./nxos/_physical.j2" %}
 {% endfor %}
-{% for interface in config_interfaces.items if 'loop' in interface["name"] | lower %}
+{% for interface in interfaces if 'mgmt' in interface["name"] %}
+{% include "./nxos/_mgmt.j2" %}
+{% endfor %}
+{% for interface in interfaces if 'loop' in interface["name"] | lower %}
 {% include "./nxos/_loopback.j2" %}
 {% endfor %}

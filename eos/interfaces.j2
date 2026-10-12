@@ -1,4 +1,4 @@
-{% for interface in config_interfaces.items %}
+{% for interface in interfaces %}
 interface {{ interface["name"] }}
 {% if interface["description"] | length > 1 %}
    description {{ interface["description"] }}
@@ -9,5 +9,7 @@ interface {{ interface["name"] }}
 {% include "./eos/_physical.j2" %}
 {% elif 'Loop' in interface["name"] %}
 {% include "./eos/_loopback.j2" %}
+{% elif 'anagement' in interface["name"] %}
+{% include "./eos/_mgmt.j2" %}
 {% endif %}
 {% endfor %}

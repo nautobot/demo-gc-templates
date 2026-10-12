@@ -1,0 +1,10 @@
+{% if mgmt_state.vrf %}
+   vrf {{ mgmt_state.vrf }}
+{% endif %}
+{% for addr in interface["ip_addresses"] %}
+   ip address {{ addr["address"] }}{{ "" if loop.first else " secondary" }}
+{% endfor %}
+{% if interface["enabled"] == false %}
+   shutdown
+{% endif %}
+!

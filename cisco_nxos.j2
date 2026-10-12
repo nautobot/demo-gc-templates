@@ -1,5 +1,3 @@
-{% set config_interfaces = namespace(items=[]) %}
-{% include './common/config_interfaces.j2' %}
 {% set ospf_state = namespace(enabled=false, router_id=none, process_id=none, area=none, interfaces=[]) %}
 {% include './common/ospf_state.j2' %}
 {% set mgmt_state = namespace(interface=none, vrf="management") %}

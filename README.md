@@ -193,12 +193,18 @@ def vlan_parser(vlan_list, first_line_len=48, other_line_len=44):  # pylint: dis
 
 The templates require `interfaces.mgmt_only` and `interfaces.tags.name`. If the query stored in Golden Config is missing any of them, rendering fails with an `UndefinedError` (Golden Config renders with `StrictUndefined`) instead of producing a config without management or OSPF handling.
 
-## Interfaces the templates skip
+## Interfaces the templates configure
 
-`common/config_interfaces.j2` builds the list of interfaces the `interfaces.j2` templates loop over. It leaves out:
+The `interfaces.j2` templates configure every interface the Device Info query returns, management ports included, so Nautobot must hold exactly the interfaces the device runs. In the containerlab lab, `Loopback99` exists only on IOS and NX-OS, where it carries the primary IP; on EOS and Junos the primary IP is on the management port and the device has no `Loopback99`.
 
-- Interfaces with `mgmt_only` set. Their real configuration (environment-specific addresses, DHCP, management VRFs) is not modelled in Nautobot, so rendering them would cut the device off its management network.
-- `Loopback99`, the containerlab management loopback.
+Management ports render from their Nautobot address, so Nautobot must hold the address the device runs; otherwise remediation rewrites the device's management access. Their VRF is not read from Nautobot: it is fixed per platform by `mgmt_state.vrf` in the platform template (see the table under [Management interface for services](#management-interface-for-services)).
+
+| Platform | Port | Rendered |
+|---|---|---|
+| EOS | `Management0` (`eos/_mgmt.j2`) | Description, `vrf <mgmt_state.vrf>` when the platform sets one (none on EOS), addresses |
+| IOS | `GigabitEthernet1` (`ios/_physical.j2`) | Same stanza as the data ports, in the global table |
+| NX-OS | `mgmt0` (`nxos/_mgmt.j2`) | Description, `vrf member management`, addresses |
+| Junos | `fxp0` (`junos/_mgmt.j2`) | Description and addresses on `unit 0`. No VRF line: `set system management-instance` puts `fxp0` in `mgmt_junos` implicitly |
 
 ## Primary and secondary addresses
 
@@ -229,6 +235,6 @@ Every key is optional. When a key is missing, the templates render the same line
 
 ### OSPF
 
-- An interface runs OSPF only when it carries the `ospf` tag, has an address, and is one the templates configure (not `mgmt_only`, not `Loopback99`). Physical interfaces use the point-to-point network type. Loopbacks are passive on EOS, IOS and Junos; NX-OS has no passive option for loopbacks and does not send hellos from them.
+- An interface runs OSPF only when it carries the `ospf` tag and has an address. Physical interfaces use the point-to-point network type. Loopbacks are passive on EOS, IOS and Junos; NX-OS has no passive option for loopbacks and does not send hellos from them.
 - The router-id is the address of the tagged `Loopback0` (`loopback0` on NX-OS, `lo0` on Junos).
 - A device without any tagged interface renders no OSPF configuration (including NX-OS `feature ospf`), even when `ospf` is defined.

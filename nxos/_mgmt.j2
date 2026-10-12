@@ -1,0 +1,12 @@
+interface {{ interface["name"] }}
+{% if interface["description"] | length > 1 %}
+  description {{ interface["description"] }}
+{% endif %}
+  vrf member {{ mgmt_state.vrf }}
+{% for addr in interface["ip_addresses"] %}
+  ip address {{ addr["address"] }}{{ "" if loop.first else " secondary" }}
+{% endfor %}
+{% if interface["enabled"] == false %}
+  shutdown
+{% endif %}
+
