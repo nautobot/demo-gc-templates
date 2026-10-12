@@ -6,3 +6,4 @@ ip domain lookup source-interface {{ mgmt_state.interface }}
 ip name-server vrf default {{ name_server }}
 {% endfor %}
 dns domain {{ dns.get("domain", "infra.ntc.com") }}
+
