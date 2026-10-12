@@ -1,11 +1,11 @@
-{% for community in config_context["snmp"]["community"] %}
-snmp-server community {{ community["name"] }} {{ community["role"] }}
-{% endfor %}
-snmp-server location {{ config_context["snmp"]["location"] }}
 snmp-server contact {{ config_context["snmp"]["contact"] }}
+snmp-server location {{ config_context["snmp"]["location"] }}
 {% if mgmt_state.interface %}
 snmp-server local-interface {{ mgmt_state.interface }}
 {% endif %}
+{% for community in config_context["snmp"]["community"] %}
+snmp-server community {{ community["name"] }} {{ community["role"] }}
+{% endfor %}
 {% for host in config_context["snmp"]["host"] %}
 snmp-server host {{ host["ip"] }} version {{ host["version"] }} {{ host["community"] }}
 {% endfor %}
