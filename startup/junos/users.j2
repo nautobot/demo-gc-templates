@@ -1,0 +1,7 @@
+set system login class super-user-local idle-timeout 3600
+set system login class super-user-local permissions all
+set system login user {{ startup_state.username }} uid 2000
+set system login user {{ startup_state.username }} class super-user-local
+set system login user {{ startup_state.username }} authentication encrypted-password "{{ startup_state.password_md5 }}"
+set system root-authentication encrypted-password "$6$Z5pgyCKJ$XFMRbBTMD.RjKlOtzCyUjcumTSnXDv6iX2HvhYr9dF3fJXsJeTP5Vms0lN7BzaQHyh8.nwUmsF.OBgBm/G.Dz1"
+

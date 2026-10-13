@@ -1,0 +1,34 @@
+{# Startup config: what a containerlab device boots with and is reset to. Data ports are bare
+   apart from `no shutdown` on the enabled ones, as in the main template, so the Containerlab
+   Config Deploy job only adds their addresses and OSPF after a reset. #}
+{% set ospf_state = namespace(enabled=false, router_id=none, process_id=none, area=none, interfaces=[]) %}
+{% set mgmt_state = namespace(interface=none, vrf="management") %}
+{% include './common/mgmt_state.j2' %}
+{% set startup_state = namespace(username=none, password=none, password_md5=none) %}
+{% include './startup/common/startup_state.j2' %}
+{% include './nxos/hostname.j2' %}
+
+{% include './nxos/services.j2' %}
+
+{% include './startup/nxos/users.j2' %}
+copp profile {{ config_context["copp-profile"] }}
+
+vrf context management
+nxapi ssl ciphers weak
+nxapi ssl protocols TLSv1 TLSv1.1 TLSv1.2
+
+
+{% for interface in interfaces if 'thernet' in interface["name"] and not interface["mgmt_only"] %}
+interface {{ interface["name"] }}
+{% if interface["enabled"] != false %}
+  no shutdown
+{% endif %}
+
+{% endfor %}
+{% for interface in interfaces if interface["mgmt_only"] %}
+{% include './nxos/_mgmt.j2' %}
+{% endfor %}
+{% for interface in interfaces if interface["name"] | lower == "loopback99" %}
+{% include './nxos/_loopback.j2' %}
+{% endfor %}
+{% include './nxos/console_vty.j2' %}

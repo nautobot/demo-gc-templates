@@ -1,0 +1,29 @@
+{# Startup config: what a containerlab device boots with and is reset to. Data ports are bare;
+   their addresses, OSPF and services come from the main template as change config. #}
+{% set mgmt_state = namespace(interface=none, vrf="mgmt_junos") %}
+{% include './common/mgmt_state.j2' %}
+{% set startup_state = namespace(username=none, password=none, password_md5=none) %}
+{% include './startup/common/startup_state.j2' %}
+set version 18.2R1.9
+{% include './startup/junos/users.j2' %}
+{% include './junos/hostname.j2' %}
+set system management-instance
+{% include './junos/services.j2' %}
+set chassis fpc 0 pic 0 number-of-ports 20
+set chassis fpc 0 lite-mode
+{% for interface in interfaces if 'ge-' in interface["name"] %}
+set interfaces {{ interface["name"] }} unit 0 family inet
+{% if interface["enabled"] == false %}
+set interfaces {{ interface["name"] }} disable
+{% endif %}
+{% endfor %}
+{% for interface in interfaces if interface["mgmt_only"] %}
+{% include './junos/_mgmt.j2' %}
+{% endfor %}
+{% if config_context["lldp"] == true %}
+set protocols lldp transmit-delay 5
+set protocols lldp port-id-subtype interface-name
+set protocols lldp interface all
+set protocols lldp interface fxp0
+{% endif %}
+set routing-instances mgmt_junos description "Management VRF"

@@ -238,3 +238,26 @@ Every key is optional. When a key is missing, the templates render the same line
 - An interface runs OSPF only when it carries the `ospf` tag and has an address. Physical interfaces use the point-to-point network type. Loopbacks are passive on EOS, IOS and Junos; NX-OS has no passive option for loopbacks and does not send hellos from them.
 - The router-id is the address of the tagged `Loopback0` (`loopback0` on NX-OS, `lo0` on Junos).
 - A device without any tagged interface renders no OSPF configuration (including NX-OS `feature ospf`), even when `ospf` is defined.
+
+## Startup config
+
+`startup/<network_driver>.j2` renders the startup config of a containerlab device: the configuration it boots with and that the Containerlab Startup Reset job (solitaire-data) replaces the device configuration with. Golden Config does not render these templates itself, since it keeps one intended config per device; the job renders them with the device's Golden Config setting (its GraphQL query and this repository), then pushes the result with a configuration replace. The main templates render the change config on top of it.
+
+The startup config holds:
+
+- Hostname, AAA and local users.
+- The management port (same partials as the main templates), its VRF, and `Loopback99` on IOS and NX-OS.
+- What the device needs to stay manageable: EOS `management api`, IOS `archive` and `ip scp server enable`, NX-OS `feature nxapi`/`scp-server`, Junos `system services`.
+- Every other physical port, bare: no description, addresses or OSPF. Ports keep their admin state from Nautobot, as in the main templates: EOS and IOS render `shutdown` and Junos `disable` on disabled ports, and NX-OS renders `no shutdown` on enabled ports; a disabled NX-OS port renders without `shutdown`, because the port is shut by default and the device does not show it. The lab enables only cabled NX-OS ports (Seed Lab Environment in solitaire-data).
+
+It leaves out the change config (DNS, logging, NTP, SNMP, OSPF, `Loopback0`, port addresses), BGP and static routes, and the IOS self-signed certificate and license lines, which are unique to each device.
+
+The templates require the `startup` config context key, which only the containerlab devices carry (`lab_startup.yml` in demo-git-datasource):
+
+| Key | Shape | Renders |
+|---|---|---|
+| `startup` | `{secrets_group: str}` | Local users from the secrets group's username and password. |
+
+Users render as Jinja placeholders such as `{{ "golden-config" | get_secret_by_secret_group_name("password") | safe }}`, which Golden Config's postprocessing (`render_secrets`) fills in before the config is pushed. NX-OS keeps `admin` (it cannot be removed) with the secrets group password; Junos stores an MD5-crypt hash of the password with a fixed salt, and its `root-authentication` is unchanged.
+
+The password is rendered unquoted after `secret 0` / `password 0`, so it must not contain spaces or `#`.
