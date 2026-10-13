@@ -24,9 +24,8 @@ interface {{ interface["name"] }}
   ip ospf network point-to-point
   ip router ospf {{ ospf_state.process_id }} area {{ ospf_state.area }}
 {% endif %}
-{% if interface["enabled"] == false %}
-  shutdown
-{% else %}
+{# Data ports are shut down by default, and the device does not show `shutdown`. #}
+{% if interface["enabled"] != false %}
   no shutdown
 {% endif %}
 
