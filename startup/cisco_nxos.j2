@@ -5,7 +5,11 @@
    config leaves out, defaults included, and reads a missing `shutdown` as `no shutdown`. So unlike
    the main template, this one follows a 9000v (NX-OS 10.2) checkpoint: it carries the system
    defaults the checkpoint lists (`startup/nxos/defaults/`, NX-API, logging, ...) and states every
-   port's admin state. `nxos_checkpoint` makes the shared partials render the checkpoint lines too. #}
+   port's admin state. `nxos_checkpoint` makes the shared partials render the checkpoint lines too.
+   NX-OS refuses a rollback file that does not start with a checkpoint header. #}
+!Command: Checkpoint cmd vdc 1
+!Time: Thu Jan  1 00:00:00 1970
+
 {% set nxos_checkpoint = true %}
 {% set ospf_state = namespace(enabled=false, router_id=none, process_id=none, area=none, interfaces=[]) %}
 {% set mgmt_state = namespace(interface=none, vrf="management") %}
