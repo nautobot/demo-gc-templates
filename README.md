@@ -258,6 +258,6 @@ The templates require the `startup` config context key, which only the container
 |---|---|---|
 | `startup` | `{secrets_group: str}` | Local users from the secrets group's username and password. |
 
-Users render as Jinja placeholders such as `{{ "golden-config" | get_secret_by_secret_group_name("password") | safe }}`, which Golden Config's postprocessing (`render_secrets`) fills in before the config is pushed. NX-OS keeps `admin` (it cannot be removed) with the secrets group password; Junos stores an MD5-crypt hash of the password with a fixed salt, and its `root-authentication` is unchanged.
+Users render as Jinja placeholders such as `{{ "golden-config" | get_secret_by_secret_group_name("password") | safe }}`, which the Containerlab Startup Reset job in solitaire-data fills in with Golden Config's `get_secret_by_secret_group_name` filter before the config is pushed. NX-OS keeps `admin` (it cannot be removed) with the secrets group password; Junos stores an MD5-crypt hash of the password with a fixed salt, and its `root-authentication` is unchanged.
 
 The password is rendered unquoted after `secret 0` / `password 0`, so it must not contain spaces or `#`.
