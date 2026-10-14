@@ -1,5 +1,5 @@
 {% if interface["description"] | length > 1 %}
-set interfaces {{ interface["name"] }} unit 0 description "{{ interface["description"] }}"
+set interfaces {{ interface["name"] }} unit 0 description {{ interface["description"] if " " not in interface["description"] else "\"" ~ interface["description"] ~ "\"" }}
 {% endif %}
 {% for addr in interface["ip_addresses"] %}
 set interfaces {{ interface["name"] }} unit 0 family inet address {{ addr["address"] }}
