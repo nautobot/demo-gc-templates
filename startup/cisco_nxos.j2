@@ -18,8 +18,11 @@
 {% include './startup/nxos/users.j2' %}
 copp profile {{ config_context["copp-profile"] }}
 
+vlan 1
+
 vrf context {{ mgmt_state.vrf }}
 {% include './nxos/mgmt_route.j2' %}
+nxapi https port 443
 nxapi idle-timeout 10
 no nxapi client certificate authentication
 nxapi ssl ciphers weak
