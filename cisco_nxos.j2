@@ -112,7 +112,7 @@ route-map {{ name }} {{ details["type"] }} {{ details["seq"] }}
 {% endfor %}
 {% endfor %}
 {% endif %}
-vrf context management
+vrf context {{ mgmt_state.vrf }}
 {% include './nxos/mgmt_route.j2' %}
 
 logging level sysmgr 4

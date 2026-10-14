@@ -26,5 +26,5 @@ set protocols lldp port-id-subtype interface-name
 set protocols lldp interface all
 set protocols lldp interface fxp0
 {% endif %}
-set routing-instances mgmt_junos description "Management VRF"
+set routing-instances {{ mgmt_state.vrf }} description "Management VRF"
 {% include './junos/mgmt_route.j2' %}
