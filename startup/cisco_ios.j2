@@ -93,8 +93,15 @@ lldp run
 cdp run
 {% endif %}
 !
-{% for interface in interfaces if interface["name"] == "Loopback99" %}
+{# Loopback99 holds the management address. Loopback0 is bare, like the data ports: the deploy adds
+   its address and OSPF, and `passive-interface Loopback0` needs it to exist already. #}
+{% for interface in interfaces if interface["name"] in ("Loopback0", "Loopback99") %}
+{% if interface["name"] == "Loopback99" %}
 {% include './ios/_loopback.j2' %}
+{% else %}
+interface {{ interface["name"] }}
+ no ip address
+{% endif %}
 !
 {% endfor %}
 {% for interface in interfaces if interface["name"].startswith("GigabitEthernet") %}
