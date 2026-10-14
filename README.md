@@ -247,10 +247,11 @@ The startup config holds:
 
 - Hostname, AAA and local users.
 - The management port (same partials as the main templates), its VRF, and `Loopback99` on IOS and NX-OS.
+- The management default route: `10.0.0.2` on IOS, NX-OS and Junos, the gateway of the QEMU user network vrnetlab gives the VM (the device is always `10.0.0.15/24`), and `172.18.0.1` on EOS, the containerlab management network gateway, since cEOS runs natively. NX-OS and Junos put it in the management VRF.
 - What the device needs to stay manageable: EOS `management api`, IOS `archive` and `ip scp server enable`, NX-OS `feature nxapi`/`scp-server`, Junos `system services`.
 - Every other physical port, bare: no description, addresses or OSPF. Ports keep their admin state from Nautobot, as in the main templates: EOS and IOS render `shutdown` and Junos `disable` on disabled ports, and NX-OS renders `no shutdown` on enabled ports; a disabled NX-OS port renders without `shutdown`, because the port is shut by default and the device does not show it. The lab enables only cabled NX-OS ports (Seed Lab Environment in solitaire-data).
 
-It leaves out the change config (DNS, logging, NTP, SNMP, OSPF, `Loopback0`, port addresses), BGP and static routes, and the IOS self-signed certificate and license lines, which are unique to each device.
+It leaves out the change config (DNS, logging, NTP, SNMP, OSPF, `Loopback0`, port addresses), BGP and the other static routes, and the IOS self-signed certificate and license lines, which are unique to each device.
 
 The templates require the `startup` config context key, which only the containerlab devices carry (`lab_startup.yml` in demo-git-datasource):
 

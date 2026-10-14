@@ -32,6 +32,8 @@ interface {{ interface["name"] }}
 
 ip routing
 !
+ip route 0.0.0.0/0 172.18.0.1
+!
 {% include './eos/services.j2' %}
 !
 end
