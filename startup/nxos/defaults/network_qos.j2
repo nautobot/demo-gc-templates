@@ -1,0 +1,63 @@
+{# System-defined network-qos class and policy maps of the 9000v (NX-OS 10.2). #}
+class-map type network-qos c-nq1
+  description Default class on qos-group 1
+  match qos-group 1
+class-map type network-qos c-nq2
+  description Default class on qos-group 2
+  match qos-group 2
+class-map type network-qos c-nq3
+  description Default class on qos-group 3
+  match qos-group 3
+class-map type network-qos c-8q-nq1
+  description Default class on qos-group 1
+  match qos-group 1
+class-map type network-qos c-8q-nq2
+  description Default class on qos-group 2
+  match qos-group 2
+class-map type network-qos c-8q-nq3
+  description Default class on qos-group 3
+  match qos-group 3
+class-map type network-qos c-8q-nq4
+  description Default class on qos-group 4
+  match qos-group 4
+class-map type network-qos c-8q-nq5
+  description Default class on qos-group 5
+  match qos-group 5
+class-map type network-qos c-8q-nq6
+  description Default class on qos-group 6
+  match qos-group 6
+class-map type network-qos c-8q-nq7
+  description Default class on qos-group 7
+  match qos-group 7
+class-map type network-qos c-nq-default
+  description Default class on qos-group 0
+  match qos-group 0
+class-map type network-qos c-8q-nq-default
+  description Default class on qos-group 0
+  match qos-group 0
+policy-map type network-qos default-nq-policy
+  class type network-qos c-nq3
+    mtu 1500
+  class type network-qos c-nq2
+    mtu 1500
+  class type network-qos c-nq1
+    mtu 1500
+  class type network-qos c-nq-default
+    mtu 1500
+policy-map type network-qos default-8q-nq-policy
+  class type network-qos c-8q-nq7
+    mtu 1500
+  class type network-qos c-8q-nq6
+    mtu 1500
+  class type network-qos c-8q-nq5
+    mtu 1500
+  class type network-qos c-8q-nq4
+    mtu 1500
+  class type network-qos c-8q-nq3
+    mtu 1500
+  class type network-qos c-8q-nq2
+    mtu 1500
+  class type network-qos c-8q-nq1
+    mtu 1500
+  class type network-qos c-8q-nq-default
+    mtu 1500

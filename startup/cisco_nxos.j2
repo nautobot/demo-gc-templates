@@ -3,31 +3,62 @@
    and OSPF after a reset.
    NAPALM replaces NX-OS config with a checkpoint rollback, which removes every checkpoint line this
    config leaves out, defaults included, and reads a missing `shutdown` as `no shutdown`. So unlike
-   the main template, this one carries the 9000v defaults a checkpoint holds (`checkpoint_defaults`)
-   and states every port's admin state. #}
-{% set nxos_explicit_admin_state = true %}
+   the main template, this one follows a 9000v (NX-OS 10.2) checkpoint: it carries the system
+   defaults the checkpoint lists (`startup/nxos/defaults/`, NX-API, logging, ...) and states every
+   port's admin state. `nxos_checkpoint` makes the shared partials render the checkpoint lines too. #}
+{% set nxos_checkpoint = true %}
 {% set ospf_state = namespace(enabled=false, router_id=none, process_id=none, area=none, interfaces=[]) %}
 {% set mgmt_state = namespace(interface=none, vrf="management") %}
 {% include './common/mgmt_state.j2' %}
 {% set startup_state = namespace(username=none, password=none) %}
 {% include './startup/common/startup_state.j2' %}
 {% include './nxos/hostname.j2' %}
+{% include './startup/nxos/defaults/network_qos.j2' %}
 
+
+!#feature ssh
+!#ssh key rsa 1024
+feature telnet
 {% include './nxos/services.j2' %}
 
+feature netconf
+feature grpc
+
+{% include './startup/nxos/defaults/roles.j2' %}
+
+system server session cmd-timeout 300
 {% include './startup/nxos/users.j2' %}
+ip domain-lookup
+{% include './startup/nxos/defaults/queuing.j2' %}
+
 copp profile {{ config_context["copp-profile"] }}
+no system mode maintenance
+rmon event 1 log trap public description FATAL(1) owner PMON@FATAL
+rmon event 2 log trap public description CRITICAL(2) owner PMON@CRITICAL
+rmon event 3 log trap public description ERROR(3) owner PMON@ERROR
+rmon event 4 log trap public description WARNING(4) owner PMON@WARNING
+rmon event 5 log trap public description INFORMATION(5) owner PMON@INFO
+callhome
+  !#destination-profile CiscoTAC-1 message-level 0
+  !#destination-profile CiscoTAC-1 message-size 5000000
+  !#destination-profile full_txt message-level 0
+  !#destination-profile full_txt message-size 2500000
+  !#destination-profile short_txt message-level 0
+  !#destination-profile short_txt message-size 4000
+  !#periodic-inventory notification interval 7
+  !#periodic-inventory notification timeofday 08:00
 
 vlan 1
-
 vrf context {{ mgmt_state.vrf }}
 {% include './nxos/mgmt_route.j2' %}
+{# NX-API as the device runs it: NAPALM's NX-OS driver works over it, so the rollback must not change it. #}
+no nxapi http
 nxapi https port 443
-nxapi idle-timeout 10
+no nxapi ssl ciphers weak
+nxapi ssl protocols TLSv1.2
 no nxapi client certificate authentication
-nxapi ssl ciphers weak
-nxapi ssl protocols TLSv1 TLSv1.1 TLSv1.2
-{% include './startup/nxos/checkpoint_defaults.j2' %}
+nxapi idle-timeout 10
+
 
 interface Vlan1
 
@@ -46,4 +77,14 @@ interface {{ interface["name"] }}
 {% for interface in interfaces if interface["name"] | lower == "loopback99" %}
 {% include './nxos/_loopback.j2' %}
 {% endfor %}
+icam monitor scale
+
 {% include './nxos/console_vty.j2' %}
+xml server timeout 1200
+
+no priority-flow-control override-interface mode off
+
+logging logfile messages 5 size 4194304
+logging monitor
+logging module
+logging console

@@ -1,9 +1,0 @@
-{# Defaults a 9000v checkpoint lists but `show running-config` does not; a rollback without them
-   would remove them. #}
-logging console
-logging module
-logging monitor
-logging logfile messages 5 size 4194304
-no priority-flow-control override-interface mode off
-xml server timeout 1200
-icam monitor scale

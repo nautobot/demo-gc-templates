@@ -1,0 +1,45 @@
+{# System-defined privilege roles of the 9000v (NX-OS 10.2). #}
+role name priv-15
+  description This is a system defined privilege role.
+  rule 1 permit read-write
+role name priv-14
+  description This is a system defined privilege role.
+  rule 1 permit read-write
+role name priv-13
+  description This is a system defined privilege role.
+role name priv-12
+  description This is a system defined privilege role.
+role name priv-11
+  description This is a system defined privilege role.
+role name priv-10
+  description This is a system defined privilege role.
+role name priv-9
+  description This is a system defined privilege role.
+role name priv-8
+  description This is a system defined privilege role.
+role name priv-7
+  description This is a system defined privilege role.
+role name priv-6
+  description This is a system defined privilege role.
+role name priv-5
+  description This is a system defined privilege role.
+role name priv-4
+  description This is a system defined privilege role.
+role name priv-3
+  description This is a system defined privilege role.
+role name priv-2
+  description This is a system defined privilege role.
+role name priv-1
+  description This is a system defined privilege role.
+role name priv-0
+  description This is a system defined privilege role.
+  rule 10 permit command traceroute6 *
+  rule 9 permit command traceroute *
+  rule 8 permit command telnet6 *
+  rule 7 permit command telnet *
+  rule 6 permit command ping6 *
+  rule 5 permit command ping *
+  rule 4 permit command ssh6 *
+  rule 3 permit command ssh *
+  rule 2 permit command enable *
+  rule 1 permit read

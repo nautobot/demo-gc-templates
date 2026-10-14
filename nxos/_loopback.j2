@@ -14,7 +14,7 @@ interface {{ interface["name"] | lower }}
 {% endif %}
 {% if interface["enabled"] == false %}
   shutdown
-{% elif nxos_explicit_admin_state is defined and nxos_explicit_admin_state %}
+{% elif nxos_checkpoint is defined and nxos_checkpoint %}
   no shutdown
 {% endif %}
 
