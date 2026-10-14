@@ -1,6 +1,11 @@
 {# Startup config: what a containerlab device boots with and is reset to. Data ports are bare
-   apart from `no shutdown` on the enabled ones, as in the main template, so the Containerlab
-   Config Deploy job only adds their addresses and OSPF after a reset. #}
+   apart from their admin state, so the Containerlab Config Deploy job only adds their addresses
+   and OSPF after a reset.
+   NAPALM replaces NX-OS config with a checkpoint rollback, which removes every checkpoint line this
+   config leaves out, defaults included, and reads a missing `shutdown` as `no shutdown`. So unlike
+   the main template, this one carries the 9000v defaults a checkpoint holds (`checkpoint_defaults`)
+   and states every port's admin state. #}
+{% set nxos_explicit_admin_state = true %}
 {% set ospf_state = namespace(enabled=false, router_id=none, process_id=none, area=none, interfaces=[]) %}
 {% set mgmt_state = namespace(interface=none, vrf="management") %}
 {% include './common/mgmt_state.j2' %}
@@ -15,14 +20,20 @@ copp profile {{ config_context["copp-profile"] }}
 
 vrf context {{ mgmt_state.vrf }}
 {% include './nxos/mgmt_route.j2' %}
+nxapi idle-timeout 10
+no nxapi client certificate authentication
 nxapi ssl ciphers weak
 nxapi ssl protocols TLSv1 TLSv1.1 TLSv1.2
+{% include './startup/nxos/checkpoint_defaults.j2' %}
 
+interface Vlan1
 
 {% for interface in interfaces if 'thernet' in interface["name"] and not interface["mgmt_only"] %}
 interface {{ interface["name"] }}
 {% if interface["enabled"] != false %}
   no shutdown
+{% else %}
+  shutdown
 {% endif %}
 
 {% endfor %}
