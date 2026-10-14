@@ -2,6 +2,9 @@ set system login class super-user-local idle-timeout 3600
 set system login class super-user-local permissions all
 set system login user {{ startup_state.username }} uid 2000
 set system login user {{ startup_state.username }} class super-user-local
-set system login user {{ startup_state.username }} authentication encrypted-password "{{ startup_state.password_md5 }}"
+{# TODO: hash the secrets group password once Nautobot can: netutils' `encrypt_type5` needs Python's
+   `crypt` (removed in 3.13) or `legacycrypt`. Until then this is the hash from the lab's startup
+   config, so it must match the secrets group password the jobs log in with. #}
+set system login user {{ startup_state.username }} authentication encrypted-password "$6$Jb4pV0VD$pc/aqMCWfTspi32iuDxWdwDvD62ijsXenDc8Q9Soum30vpvu2E2UxreucuJVRD.kn8c5rkJa0Lk9Ha42/TvZW."
 set system root-authentication encrypted-password "$6$Z5pgyCKJ$XFMRbBTMD.RjKlOtzCyUjcumTSnXDv6iX2HvhYr9dF3fJXsJeTP5Vms0lN7BzaQHyh8.nwUmsF.OBgBm/G.Dz1"
 

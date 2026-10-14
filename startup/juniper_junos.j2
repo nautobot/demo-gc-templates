@@ -2,7 +2,7 @@
    their addresses, OSPF and services come from the main template as change config. #}
 {% set mgmt_state = namespace(interface=none, vrf="mgmt_junos") %}
 {% include './common/mgmt_state.j2' %}
-{% set startup_state = namespace(username=none, password=none, password_md5=none) %}
+{% set startup_state = namespace(username=none, password=none) %}
 {% include './startup/common/startup_state.j2' %}
 set version 18.2R1.9
 {% include './startup/junos/users.j2' %}

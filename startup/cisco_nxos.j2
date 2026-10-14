@@ -4,7 +4,7 @@
 {% set ospf_state = namespace(enabled=false, router_id=none, process_id=none, area=none, interfaces=[]) %}
 {% set mgmt_state = namespace(interface=none, vrf="management") %}
 {% include './common/mgmt_state.j2' %}
-{% set startup_state = namespace(username=none, password=none, password_md5=none) %}
+{% set startup_state = namespace(username=none, password=none) %}
 {% include './startup/common/startup_state.j2' %}
 {% include './nxos/hostname.j2' %}
 
