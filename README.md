@@ -232,6 +232,7 @@ Every key is optional. When a key is missing, the templates render the same line
 | `dns` | `{domain: str, name_servers: [str]}` | Domain name and name servers on all platforms. |
 | `syslog` | `{servers: [{ip: str, port: int}], port: int, level: str}` | Syslog hosts on all platforms. A server's `port` overrides the shared `port`. NX-OS turns `level` into its severity number. |
 | `ospf` | `{process_id: int, area: str, reference_bandwidth: int}` | OSPF on every interface tagged `ospf`. `process_id` defaults to `1`, `area` to `0.0.0.0`. `reference_bandwidth` is in Mbps. |
+| `mgmt_gateway` | `str` | The management default route `0.0.0.0/0` via this next hop, in the main and startup templates: in the global table on EOS and IOS, under `vrf context management` on NX-OS, in `mgmt_junos` on Junos. |
 
 ### OSPF
 
@@ -247,7 +248,7 @@ The startup config holds:
 
 - Hostname, AAA and local users.
 - The management port (same partials as the main templates), its VRF, and `Loopback99` on IOS and NX-OS.
-- The management default route: `10.0.0.2` on IOS, NX-OS and Junos, the gateway of the QEMU user network vrnetlab gives the VM (the device is always `10.0.0.15/24`), and `172.18.0.1` on EOS, the containerlab management network gateway, since cEOS runs natively. NX-OS and Junos put it in the management VRF.
+- The management default route via `mgmt_gateway`, set in the platform contexts in demo-git-datasource: `10.0.0.2` on IOS, NX-OS and Junos, the gateway of the QEMU user network vrnetlab gives the VM (the device is always `10.0.0.15/24`), and `172.18.0.1` on EOS, the containerlab management network gateway, since cEOS runs natively.
 - What the device needs to stay manageable: EOS `management api`, IOS `archive` and `ip scp server enable`, NX-OS `feature nxapi`/`scp-server`, Junos `system services`.
 - Every other physical port, bare: no description, addresses or OSPF. Ports keep their admin state from Nautobot, as in the main templates: EOS and IOS render `shutdown` and Junos `disable` on disabled ports, and NX-OS renders `no shutdown` on enabled ports; a disabled NX-OS port renders without `shutdown`, because the port is shut by default and the device does not show it. The lab enables only cabled NX-OS ports (Seed Lab Environment in solitaire-data).
 

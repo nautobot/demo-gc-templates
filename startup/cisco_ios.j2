@@ -125,7 +125,7 @@ no ip http server
 ip http authentication local
 no ip http secure-server
 !
-ip route 0.0.0.0 0.0.0.0 10.0.0.2
+{% include './ios/mgmt_route.j2' %}
 ip scp server enable
 !
 control-plane

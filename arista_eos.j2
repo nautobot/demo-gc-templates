@@ -135,6 +135,8 @@ spanning-tree mode mstp
 !
 ip routing
 !
+{% include './eos/mgmt_route.j2' %}
+!
 {% if config_context["bgp"] is defined %}
 {% include './eos/bgp.j2' %}
 {% endif %}

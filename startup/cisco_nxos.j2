@@ -14,7 +14,7 @@
 copp profile {{ config_context["copp-profile"] }}
 
 vrf context management
-  ip route 0.0.0.0/0 10.0.0.2
+{% include './nxos/mgmt_route.j2' %}
 nxapi ssl ciphers weak
 nxapi ssl protocols TLSv1 TLSv1.1 TLSv1.2
 

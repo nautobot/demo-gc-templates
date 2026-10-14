@@ -218,6 +218,7 @@ no ip http server
 ip http authentication local
 no ip http secure-server
 !
+{% include './ios/mgmt_route.j2' %}
 {% if config_context["routes"] is defined %}
 {% if config_context["routes"]["static"] is defined %}
 {% for static in config_context["routes"]["static"] %}

@@ -27,4 +27,4 @@ set protocols lldp interface all
 set protocols lldp interface fxp0
 {% endif %}
 set routing-instances mgmt_junos description "Management VRF"
-set routing-instances mgmt_junos routing-options static route 0.0.0.0/0 next-hop 10.0.0.2
+{% include './junos/mgmt_route.j2' %}

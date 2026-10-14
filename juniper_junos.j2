@@ -34,3 +34,4 @@ set protocols lldp interface fxp0
 set policy-options policy-statement send-direct term 1 from protocol direct
 set policy-options policy-statement send-direct term 1 then accept
 set routing-instances mgmt_junos description "Management VRF"
+{% include './junos/mgmt_route.j2' %}

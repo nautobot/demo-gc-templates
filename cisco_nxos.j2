@@ -113,6 +113,7 @@ route-map {{ name }} {{ details["type"] }} {{ details["seq"] }}
 {% endfor %}
 {% endif %}
 vrf context management
+{% include './nxos/mgmt_route.j2' %}
 
 logging level sysmgr 4
 nxapi ssl ciphers weak
