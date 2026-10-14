@@ -21,14 +21,6 @@ boot-start-marker
 boot-end-marker
 !
 !
-vrf definition MANAGEMENT
- !
- address-family ipv4
- exit-address-family
- !
- address-family ipv6
- exit-address-family
-!
 !
 {% if config_context["aaa-new-model"] == false %}
 no aaa new-model
