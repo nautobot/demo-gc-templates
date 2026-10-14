@@ -1,12 +1,15 @@
 {# Startup config: what a containerlab device boots with and is reset to. Data ports are bare;
    their addresses, OSPF and services come from the main template as change config. The
-   self-signed certificate and license lines are left out: they are unique to each device. #}
+   self-signed certificate and license lines are left out: they are unique to each device.
+   `configure replace` rejects a file without a `version` line as not a valid config file; 17.3 is
+   the lab's CSR1000V image (17.03.04). #}
 {% set ospf_state = namespace(enabled=false, router_id=none, process_id=none, area=none, interfaces=[]) %}
 {% set mgmt_state = namespace(interface=none, vrf=none) %}
 {% include './common/mgmt_state.j2' %}
 {% set startup_state = namespace(username=none, password=none) %}
 {% include './startup/common/startup_state.j2' %}
 !
+version 17.3
 service timestamps debug datetime msec
 service timestamps log datetime msec
 ! Call-home is enabled by Smart-Licensing.
