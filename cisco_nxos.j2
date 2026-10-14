@@ -120,6 +120,8 @@ nxapi ssl ciphers weak
 nxapi ssl protocols TLSv1 TLSv1.1 TLSv1.2
 
 
+interface Vlan1
+
 {% include "./nxos/interfaces.j2" %}
 {% include "./nxos/console_vty.j2" %}
 {% if config_context["bgp"] is defined %}
