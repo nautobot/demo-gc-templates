@@ -1,0 +1,69 @@
+{# System-defined queuing class and policy maps of the 9000v (NX-OS 10.2). The `!#` lines are
+   defaults the checkpoint lists commented out; NX-OS cannot modify or delete these maps. #}
+!# qos statistics
+!# class-map type queuing match-any c-out-q3
+  !# match qos-group 3
+!# class-map type queuing match-any c-out-q2
+  !# match qos-group 2
+!# class-map type queuing match-any c-out-q1
+  !# match qos-group 1
+!# class-map type queuing match-any c-out-q-default
+  !# match qos-group 0
+!# class-map type queuing match-any c-out-8q-q7
+  !# match qos-group 7
+!# class-map type queuing match-any c-out-8q-q6
+  !# match qos-group 6
+!# class-map type queuing match-any c-out-8q-q5
+  !# match qos-group 5
+!# class-map type queuing match-any c-out-8q-q4
+  !# match qos-group 4
+!# class-map type queuing match-any c-out-8q-q3
+  !# match qos-group 3
+!# class-map type queuing match-any c-out-8q-q2
+  !# match qos-group 2
+!# class-map type queuing match-any c-out-8q-q1
+  !# match qos-group 1
+!# class-map type queuing match-any c-out-8q-q-default
+  !# match qos-group 0
+!# class-map type queuing match-any c-in-q7
+  !# match qos-group 7
+!# class-map type queuing match-any c-in-q6
+  !# match qos-group 6
+!# class-map type queuing match-any c-in-q5
+  !# match qos-group 5
+!# class-map type queuing match-any c-in-q4
+  !# match qos-group 4
+!# class-map type queuing match-any c-in-q3
+  !# match qos-group 3
+!# class-map type queuing match-any c-in-q2
+  !# match qos-group 2
+!# class-map type queuing match-any c-in-q1
+  !# match qos-group 1
+!# class-map type queuing match-any c-in-q-default
+  !# match qos-group 0
+policy-map type queuing default-out-policy
+  class type queuing c-out-q3
+    priority level 1
+  class type queuing c-out-q2
+    bandwidth remaining percent 0
+  class type queuing c-out-q1
+    bandwidth remaining percent 0
+  class type queuing c-out-q-default
+    bandwidth remaining percent 100
+policy-map type queuing default-8q-out-policy
+  class type queuing c-out-8q-q7
+    priority level 1
+  class type queuing c-out-8q-q6
+    bandwidth remaining percent 0
+  class type queuing c-out-8q-q5
+    bandwidth remaining percent 0
+  class type queuing c-out-8q-q4
+    bandwidth remaining percent 0
+  class type queuing c-out-8q-q3
+    bandwidth remaining percent 0
+  class type queuing c-out-8q-q2
+    bandwidth remaining percent 0
+  class type queuing c-out-8q-q1
+    bandwidth remaining percent 0
+  class type queuing c-out-8q-q-default
+    bandwidth remaining percent 100

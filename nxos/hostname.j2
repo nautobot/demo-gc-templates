@@ -1,3 +1,10 @@
 hostname {{ hostname.split('.')[0] }}
 vdc {{ hostname.split('.')[0] }} id 1
+{% if nxos_checkpoint is defined and nxos_checkpoint %}
+  limit-resource vlan minimum 16 maximum 4094
+  limit-resource vrf minimum 2 maximum 4096
+  limit-resource port-channel minimum 0 maximum 511
+  limit-resource m4route-mem minimum 58 maximum 58
+  limit-resource m6route-mem minimum 8 maximum 8
+{% endif %}
 

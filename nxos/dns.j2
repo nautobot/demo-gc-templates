@@ -1,3 +1,6 @@
+{% set dns = config_context.get("dns", {}) %}
 ip domain-lookup
-ip domain-name ntc.com
-
+ip domain-name {{ dns.get("domain", "ntc.com") }}
+{% if dns.get("name_servers") %}
+ip name-server {{ dns["name_servers"] | join(" ") }}{{ (" use-vrf " ~ mgmt_state.vrf) if mgmt_state.interface else "" }}
+{% endif %}

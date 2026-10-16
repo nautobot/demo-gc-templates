@@ -1,2 +1,13 @@
-logging server 10.125.1.171 6 port 7008
-
+{% if config_context["syslog"] is defined %}
+{% set severities = {"emergencies": 0, "alerts": 1, "critical": 2, "errors": 3, "warnings": 4, "notifications": 5, "informational": 6, "debugging": 7} %}
+{% set severity = severities.get(config_context["syslog"].get("level"), 6) %}
+{% for server in config_context["syslog"]["servers"] %}
+{% set port = server.get("port", config_context["syslog"].get("port")) %}
+logging server {{ server["ip"] }} {{ severity }}{{ (" port " ~ port) if port else "" }}{{ (" use-vrf " ~ mgmt_state.vrf) if mgmt_state.interface else "" }}
+{% endfor %}
+{% else %}
+logging server 10.125.1.171 6 port 7008{{ (" use-vrf " ~ mgmt_state.vrf) if mgmt_state.interface else "" }}
+{% endif %}
+{% if mgmt_state.interface %}
+logging source-interface {{ mgmt_state.interface }}
+{% endif %}

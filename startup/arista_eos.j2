@@ -1,0 +1,39 @@
+{# Startup config: what a containerlab device boots with and is reset to. Data ports are bare;
+   their addresses, OSPF and services come from the main template as change config. #}
+{% set mgmt_state = namespace(interface=none, vrf=none) %}
+{% include './common/mgmt_state.j2' %}
+{% set startup_state = namespace(username=none, password=none) %}
+{% include './startup/common/startup_state.j2' %}
+!
+transceiver qsfp default-mode 4x10G
+!
+{% include './eos/hostname.j2' %}
+!
+spanning-tree mode mstp
+!
+{% include './eos/aaa.j2' %}
+!
+{% include './startup/eos/users.j2' %}
+!
+{% for interface in interfaces if 'thernet' in interface["name"] and not interface["mgmt_only"] %}
+interface {{ interface["name"] }}
+{% if interface["enabled"] == false %}
+   shutdown
+{% endif %}
+!
+{% endfor %}
+{% for interface in interfaces if interface["mgmt_only"] %}
+interface {{ interface["name"] }}
+{% if interface["description"] | length > 1 %}
+   description {{ interface["description"] }}
+{% endif %}
+{% include './eos/_mgmt.j2' %}
+{% endfor %}
+
+ip routing
+!
+{% include './eos/mgmt_route.j2' %}
+!
+{% include './eos/services.j2' %}
+!
+end

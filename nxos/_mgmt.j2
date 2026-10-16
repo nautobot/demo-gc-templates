@@ -2,18 +2,11 @@ interface {{ interface["name"] }}
 {% if interface["description"] | length > 1 %}
   description {{ interface["description"] }}
 {% endif %}
-  vrf member management
-{% if interface["ip_addresses"] | length > 0 %}
+  vrf member {{ mgmt_state.vrf }}
 {% for addr in interface["ip_addresses"] %}
-{% if addr["address"] is defined %}
-  ip address {{ addr["address"] }}
-{% endif %}
+  ip address {{ addr["address"] }}{{ "" if loop.first else " secondary" }}
 {% endfor %}
-{% else %}
-  no ip address
-{% endif %}
 {% if interface["enabled"] == false %}
   shutdown
 {% endif %}
-
 

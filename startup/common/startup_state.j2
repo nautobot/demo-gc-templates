@@ -1,0 +1,11 @@
+{# Fills the caller's `startup_state` namespace from the `startup` config context, which only the
+   containerlab devices carry; a device without it fails to render. `username` and `password` are
+   placeholders for the `secrets_group` credentials: the rendered startup config keeps them as
+   Jinja, and the Containerlab Startup Reset job fills them in with Golden Config's
+   `get_secret_by_secret_group_name` filter before the config is pushed. The job autoescapes that
+   second render, so the placeholders carry `| safe` to
+   keep `&`, `<`, `>` and quotes in a password intact; `tojson` quotes the
+   secrets group name. #}
+{% set secret_source = (config_context["startup"]["secrets_group"] | tojson) ~ ' | get_secret_by_secret_group_name' %}
+{% set startup_state.username = ('{{ ' ~ secret_source ~ '("username") | safe }}') | safe %}
+{% set startup_state.password = ('{{ ' ~ secret_source ~ '("password") | safe }}') | safe %}

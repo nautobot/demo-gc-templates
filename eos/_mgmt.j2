@@ -1,14 +1,10 @@
-{% if interface["ip_addresses"] | length > 0 %}
+{% if mgmt_state.vrf %}
+   vrf {{ mgmt_state.vrf }}
+{% endif %}
 {% for addr in interface["ip_addresses"] %}
-{% if addr["address"] is defined %}
-   ip address {{ addr["address"] }}
-{% endif %}
+   ip address {{ addr["address"] }}{{ "" if loop.first else " secondary" }}
 {% endfor %}
-{% else %}
-   no ip address
-{% endif %}
 {% if interface["enabled"] == false %}
    shutdown
 {% endif %}
-
-
+!

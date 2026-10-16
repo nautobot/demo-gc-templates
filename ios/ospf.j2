@@ -1,0 +1,12 @@
+router ospf {{ ospf_state.process_id }}
+{% if ospf_state.router_id %}
+ router-id {{ ospf_state.router_id }}
+{% endif %}
+{% if config_context["ospf"].get("reference_bandwidth") %}
+ auto-cost reference-bandwidth {{ config_context["ospf"]["reference_bandwidth"] }}
+{% endif %}
+{% for name in ospf_state.interfaces if name.startswith("Loopback") %}
+ passive-interface {{ name }}
+{% endfor %}
+!
+

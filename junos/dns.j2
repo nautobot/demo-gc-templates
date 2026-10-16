@@ -1,2 +1,5 @@
-set system domain-name ntc.com
-
+{% set dns = config_context.get("dns", {}) %}
+set system domain-name {{ dns.get("domain", "ntc.com") }}
+{% for name_server in dns.get("name_servers", []) %}
+set system name-server {{ name_server }}
+{% endfor %}

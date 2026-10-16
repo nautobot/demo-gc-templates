@@ -2,8 +2,15 @@ snmp-server contact {{ config_context["snmp"]["contact"] }}
 snmp-server location {{ config_context["snmp"]["location"] }}
 {% for host in config_context["snmp"]["host"] %}
 snmp-server host {{ host["ip"] }} traps version {{ host["version"] }} {{ host["community"] }}
+{% if mgmt_state.interface %}
+snmp-server host {{ host["ip"] }} use-vrf {{ mgmt_state.vrf }}
+{% endif %}
 {% endfor %}
+{% if mgmt_state.interface %}
+snmp-server source-interface traps {{ mgmt_state.interface }}
+{% endif %}
+{% set nxos_roles = {"RO": "network-operator", "RW": "network-admin"} %}
 {% for community in config_context["snmp"]["community"] %}
-snmp-server community {{ community["name"] }} group {{ community["role"] }}
+snmp-server community {{ community["name"] }} group {{ nxos_roles.get(community["role"] | upper, community["role"]) }}
 {% endfor %}
 

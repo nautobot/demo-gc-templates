@@ -1,8 +1,6 @@
 {% for interface in interfaces %}
 interface {{ interface["name"] }}
-{% if interface["cpf_ntc_description"] is defined and interface["cpf_ntc_description"] != "" %}
-   description {{ interface["cpf_ntc_description"] }}
-{% elif interface["description"] | length > 1 %}
+{% if interface["description"] | length > 1 %}
    description {{ interface["description"] }}
 {% endif %}
 {% if 'lan' in interface["name"] %}
@@ -15,4 +13,3 @@ interface {{ interface["name"] }}
 {% include "./eos/_mgmt.j2" %}
 {% endif %}
 {% endfor %}
-

@@ -1,0 +1,10 @@
+{# Fills the caller's `mgmt_state` namespace with the device's management interface: the first
+   interface Nautobot marks mgmt_only. The caller sets `vrf` to the platform's fixed management
+   VRF, or none when the management interface is in the default routing table; it is not read
+   from Nautobot. The platform `_mgmt.j2` partials render it as the interface's VRF line, and the
+   service templates use it for `use-vrf` / `routing-instance`. #}
+{% for interface in interfaces if interface["mgmt_only"] %}
+{% if loop.first %}
+{% set mgmt_state.interface = interface["name"] %}
+{% endif %}
+{% endfor %}

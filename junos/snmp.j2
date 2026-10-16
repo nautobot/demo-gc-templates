@@ -1,6 +1,23 @@
+{% set junos_roles = {"RO": "read-only", "RW": "read-write"} %}
+{% set junos_trap_versions = {"1": "v1", "2c": "v2"} %}
+{% if config_context["snmp"].get("location") %}
+set snmp location "{{ config_context["snmp"]["location"] }}"
+{% endif %}
+{% if config_context["snmp"].get("contact") %}
+set snmp contact "{{ config_context["snmp"]["contact"] }}"
+{% endif %}
+{% if mgmt_state.interface %}
+set snmp interface {{ mgmt_state.interface }}.0
+{% endif %}
 set snmp view system-include oid .1 include
-{% for community in config_context["snmp"] %}
+{% for community in config_context["snmp"].get("community", []) %}
 set snmp community {{ community["name"] }} view system-include
-set snmp community {{ community["name"] }} authorization {{ community["role"] }}
+set snmp community {{ community["name"] }} authorization {{ junos_roles.get(community["role"] | upper, community["role"]) }}
 {% endfor %}
-
+{% for host in config_context["snmp"].get("host", []) %}
+set snmp trap-group {{ host["community"] }} version {{ junos_trap_versions.get(host["version"] | string, "all") }}
+set snmp trap-group {{ host["community"] }} targets {{ host["ip"] }}
+{% if mgmt_state.vrf %}
+set snmp trap-group {{ host["community"] }} routing-instance {{ mgmt_state.vrf }}
+{% endif %}
+{% endfor %}
