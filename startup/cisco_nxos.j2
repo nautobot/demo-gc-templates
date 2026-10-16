@@ -6,12 +6,14 @@
    the main template, this one follows a 9000v (NX-OS 10.2) checkpoint: it carries the system
    defaults the checkpoint lists (`startup/nxos/defaults/`, NX-API, logging, ...) and states every
    port's admin state. `nxos_checkpoint` makes the shared partials render the checkpoint lines too.
-   NX-OS refuses a rollback file that does not start with a checkpoint header. #}
+   NX-OS refuses a rollback file that does not start with a checkpoint header.
+   `feature ospf` stays on with no OSPF configured, so `show ip ospf neighbors` answers with an
+   empty table rather than an invalid-command error. #}
 !Command: Checkpoint cmd vdc 1
 !Time: Thu Jan  1 00:00:00 1970
 
 {% set nxos_checkpoint = true %}
-{% set ospf_state = namespace(enabled=false, router_id=none, process_id=none, area=none, interfaces=[]) %}
+{% set ospf_state = namespace(enabled=true, router_id=none, process_id=none, area=none, interfaces=[]) %}
 {% set mgmt_state = namespace(interface=none, vrf="management") %}
 {% include './common/mgmt_state.j2' %}
 {% set startup_state = namespace(username=none, password=none) %}
