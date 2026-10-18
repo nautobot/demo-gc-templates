@@ -1,5 +1,5 @@
-hostname {{ hostname.split('.')[0] }}
-vdc {{ hostname.split('.')[0] }} id 1
+hostname {{ hostname }}
+vdc {{ hostname }} id 1
 {% if nxos_checkpoint is defined and nxos_checkpoint %}
   limit-resource vlan minimum 16 maximum 4094
   limit-resource vrf minimum 2 maximum 4096
