@@ -1,6 +1,0 @@
-{# NX-OS does not allow removing `admin`, so it keeps a user with the secrets group password. #}
-no password strength-check
-username admin password 0 {{ startup_state.password }} role network-admin
-username {{ startup_state.username }} password 0 {{ startup_state.password }} role network-admin
-username {{ startup_state.username }} passphrase  lifetime 99999 warntime 14 gracetime 3
-
