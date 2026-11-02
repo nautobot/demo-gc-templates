@@ -232,7 +232,7 @@ Every key is optional. When a key is missing, the templates render the same line
 | `dns` | `{domain: str, name_servers: [str]}` | Domain name and name servers on all platforms. |
 | `syslog` | `{servers: [{ip: str, port: int}], port: int, level: str}` | Syslog hosts on all platforms. A server's `port` overrides the shared `port`. NX-OS turns `level` into its severity number. |
 | `ospf` | `{process_id: int, area: str, reference_bandwidth: int}` | OSPF on every interface tagged `ospf`. `process_id` defaults to `1`, `area` to `0.0.0.0`. `reference_bandwidth` is in Mbps. |
-| `mgmt_gateway` | `str` | The management default route `0.0.0.0/0` via this next hop, in the main and startup templates: in the global table on EOS and IOS, under `vrf context management` on NX-OS, in `mgmt_junos` on Junos. |
+| `mgmt_gateway` | `str` | The management default route `0.0.0.0/0` via this next hop, in the main templates: in the global table on EOS and IOS, under `vrf context management` on NX-OS, in `mgmt_junos` on Junos. |
 
 ### OSPF
 
@@ -242,24 +242,20 @@ Every key is optional. When a key is missing, the templates render the same line
 
 ## Startup config
 
-`startup/<network_driver>.j2` renders the startup config of a containerlab device: the configuration it boots with and that the Containerlab Startup Reset job (solitaire-data) replaces the device configuration with. Golden Config does not render these templates itself, since it keeps one intended config per device; the job renders them with the device's Golden Config setting (its GraphQL query and this repository), then pushes the result with a configuration replace. The main templates render the change config on top of it.
+`startup/<device name>.cfg` is the startup config of a containerlab device: the configuration it boots with and that the Containerlab Startup Reset job (solitaire-data) replaces the device configuration with. There is one file per lab device, named after the device in Nautobot. Golden Config does not use these files; the job reads them from this repository through the device's Golden Config setting, then pushes the result with a configuration replace. The main templates render the change config on top of it.
 
-The startup config holds:
+The files are static: they do not follow Nautobot, so a change to a lab device's hostname, management address or users has to be made in its file as well.
+
+Each file holds:
 
 - Hostname, AAA and local users.
-- The management port (same partials as the main templates), its VRF, and `Loopback99` on IOS and NX-OS.
-- The management default route via `mgmt_gateway`, set in the platform contexts in demo-git-datasource: `10.0.0.2` on IOS, NX-OS and Junos, the gateway of the QEMU user network vrnetlab gives the VM (the device is always `10.0.0.15/24`), and `172.18.0.1` on EOS, the containerlab management network gateway, since cEOS runs natively.
+- The management port with its Nautobot address and VRF: `10.0.0.15/24` on IOS, NX-OS and Junos, the address vrnetlab gives the VM (Junos `fxp0` also carries the device's containerlab address), and the containerlab management address on EOS, since cEOS runs natively.
+- The management default route: via `10.0.0.2` on IOS, NX-OS and Junos, the gateway of vrnetlab's QEMU user network, and via `172.18.0.1` on EOS, the containerlab management network gateway.
 - What the device needs to stay manageable: EOS `management api`, IOS `archive` and `ip scp server enable`, NX-OS `feature nxapi`/`scp-server`, Junos `system services`.
-- Every other physical port, bare: no description, addresses or OSPF. Ports keep their admin state from Nautobot, as in the main templates: EOS and IOS render `shutdown` and Junos `disable` on disabled ports, and NX-OS renders `no shutdown` on enabled ports; a disabled NX-OS port renders without `shutdown`, because the port is shut by default and the device does not show it. The lab enables only cabled NX-OS ports (Seed Lab Environment in solitaire-data).
+- Every other physical port, bare: no description, addresses or OSPF.
 
 It leaves out the change config (DNS, logging, NTP, SNMP, OSPF, `Loopback0`, port addresses), BGP and the other static routes, and the IOS self-signed certificate and license lines, which are unique to each device.
 
-The templates require the `startup` config context key, which only the containerlab devices carry (`lab_startup.yml` in demo-git-datasource):
-
-| Key | Shape | Renders |
-|---|---|---|
-| `startup` | `{secrets_group: str}` | Local users from the secrets group's username and password. |
-
-Users render as Jinja placeholders such as `{{ "golden-config" | get_secret_by_secret_group_name("password") | safe }}`, which the Containerlab Startup Reset job in solitaire-data fills in with Golden Config's `get_secret_by_secret_group_name` filter before the config is pushed. NX-OS keeps `admin` (it cannot be removed) with the secrets group password; Junos keeps the user's password hash from the lab's startup config (it must match the secrets group password, since netutils cannot hash it without `crypt`/`legacycrypt`), and its `root-authentication` is unchanged.
+Credentials are Jinja placeholders such as `{{ "golden-config" | get_secret_by_secret_group_name("password") | safe }}`, which the job fills in with Golden Config's `get_secret_by_secret_group_name` filter before the config is pushed. The job checks that the device's `startup.secrets_group` config context key (`lab_startup.yml` in demo-git-datasource) names the device's secrets group. NX-OS keeps `admin` (it cannot be removed) with the secrets group password; Junos keeps the user's password hash (it must match the secrets group password), and its `root-authentication` is unchanged.
 
 The password is rendered unquoted after `secret 0` / `password 0`, so it must not contain spaces or `#`.
